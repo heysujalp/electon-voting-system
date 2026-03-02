@@ -10,9 +10,8 @@ A full-stack decentralized voting platform that brings trustworthy elections to 
 [![Anchor](https://img.shields.io/badge/Anchor-0.32-blue)](https://www.anchor-lang.com/)
 [![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django)](https://djangoproject.com)
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Live Demo](https://youtu.be/FyVZHB8KP8A?si=mfzll7D3c5vFUdgU) · [Demo Video](https://youtu.be/FyVZHB8KP8A?si=mfzll7D3c5vFUdgU) · [Solana Explorer](https://explorer.solana.com/address/HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w?cluster=devnet)
+[Demo Video](https://youtu.be/FyVZHB8KP8A?si=mfzll7D3c5vFUdgU) · [Solana Explorer](https://explorer.solana.com/address/HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w?cluster=devnet)
 
 
 
@@ -323,14 +322,15 @@ This aligns with the bounty's emphasis on **Janamat, open governance, and civic 
 
 | Member | Role |
 |--------|------|
-| **[Your Name]** | Full-Stack Developer & Architect |
-<!-- Add more team members here -->
+| **Sujal Paudel** | Solo Developer & Architect |
 
 ---
 
 ## 📝 License
 
-This project is licensed under the [MIT License](LICENSE).
+Copyright © 2026 Sujal Paudel. All rights reserved.
+
+This source code is made publicly available for review and educational purposes only. No permission is granted to copy, modify, distribute, or use this software for commercial or non-commercial purposes without explicit written consent from the author.
 
 ---
 
