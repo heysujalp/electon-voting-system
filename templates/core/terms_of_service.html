@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms of Service{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <div class="legal-container">
+        <h1>Terms of Service</h1>
+        <p class="legal-updated">Last updated: <time datetime="2026-03-01">March 1, 2026</time></p>
+
+        <section>
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using ElectON ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Platform.</p>
+        </section>
+
+        <section>
+            <h2>2. Description of Service</h2>
+            <p>ElectON provides a secure online voting platform that enables organisations to create, manage, and conduct elections with blockchain-backed auditability and voter anonymity.</p>
+        </section>
+
+        <section>
+            <h2>3. Eligibility</h2>
+            <p>You must be at least 18 years old (or the age of majority in your jurisdiction) to create an administrator account. Voter participation age requirements are determined by the election administrator.</p>
+        </section>
+
+        <section>
+            <h2>4. Account Responsibilities</h2>
+            <ul>
+                <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+                <li>You must provide accurate and complete registration information.</li>
+                <li>You must not share your account with others or create multiple accounts.</li>
+                <li>You must notify us immediately of any unauthorised use of your account.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>5. Election Administrator Obligations</h2>
+            <p>As an election administrator, you agree to:</p>
+            <ul>
+                <li>Conduct elections in good faith and in accordance with your organisation's rules</li>
+                <li>Protect voter credentials and distribute them securely</li>
+                <li>Not manipulate election results or voter data</li>
+                <li>Comply with all applicable laws and regulations regarding elections and data protection</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>6. Voter Obligations</h2>
+            <p>As a voter, you agree to:</p>
+            <ul>
+                <li>Use only credentials legitimately assigned to you</li>
+                <li>Cast your vote independently and without coercion</li>
+                <li>Not attempt to vote more than once in any election</li>
+                <li>Not attempt to compromise the integrity of any election</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>7. Prohibited Use</h2>
+            <p>You may not use the Platform to:</p>
+            <ul>
+                <li>Conduct fraudulent, deceptive, or illegal elections</li>
+                <li>Attempt to gain unauthorised access to the Platform or other users' accounts</li>
+                <li>Interfere with the Platform's operation or security mechanisms</li>
+                <li>Reverse-engineer, decompile, or disassemble any part of the Platform</li>
+                <li>Transmit malicious software or harmful data</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>8. Subscription Plans</h2>
+            <p>Free and paid subscription tiers are available. Plan limits (elections, voters, features) are enforced automatically. We reserve the right to modify plan pricing and limits with 30 days' notice.</p>
+        </section>
+
+        <section>
+            <h2>9. Intellectual Property</h2>
+            <p>The Platform, including its source code, design, and documentation, is the intellectual property of ElectON. You retain ownership of your election data. We claim no rights over your content.</p>
+        </section>
+
+        <section>
+            <h2>10. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, ElectON shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Platform. Our total liability is limited to the amount you paid for the service in the 12 months preceding the claim.</p>
+        </section>
+
+        <section>
+            <h2>11. Disclaimers</h2>
+            <p>The Platform is provided "as is" without warranties of any kind. While we strive for 99.9% uptime, we do not guarantee uninterrupted service. Election results are provided for informational purposes; legal validity depends on your jurisdiction.</p>
+        </section>
+
+        <section>
+            <h2>12. Termination</h2>
+            <p>We may suspend or terminate your account if you violate these Terms. You may delete your account at any time (subject to active election restrictions). Upon termination, your data will be handled according to our <a href="{% url 'privacy_policy' %}">Privacy Policy</a>.</p>
+        </section>
+
+        <section>
+            <h2>13. Changes to Terms</h2>
+            <p>We may update these Terms from time to time. Material changes will be communicated via email or in-app notification at least 30 days before taking effect.</p>
+        </section>
+
+        <section>
+            <h2>14. Contact</h2>
+            <p>For questions about these Terms, contact us at <a href="mailto:legal@electon.app">legal@electon.app</a>.</p>
+        </section>
+    </div>
+</div>
+{% endblock %}

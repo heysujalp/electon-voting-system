@@ -1,0 +1,218 @@
+<!-- Basic Overview Tab -->
+<div class="ed-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+
+    <div class="ed-overview-grid">
+        <!-- ═══ LEFT — Quick Actions ═══ -->
+        <div class="ed-overview-left">
+            <div class="ed-section">
+                <div class="ed-section-header">
+                    <div class="ed-section-icon" style="--sec-bg: rgba(0,122,255,.1); --sec-clr: var(--apple-blue);">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3 class="ed-section-title">Quick Actions</h3>
+                        <p class="ed-section-desc">Manage your election lifecycle.</p>
+                    </div>
+                </div>
+                <div class="ed-quick-actions">
+                    <div class="ed-qa-row">
+                        <a href="{% url 'elections:preview_ballot' election_uuid=election.election_uuid %}" class="ed-qa-btn ed-qa-preview" target="_blank">
+                            <div class="ed-qa-icon"><i class="fas fa-eye"></i></div>
+                            <div class="ed-qa-text">
+                                <span class="ed-qa-label">Preview Ballot</span>
+                                <span class="ed-qa-desc">See what voters see</span>
+                            </div>
+                        </a>
+
+                        {% if election.is_draft %}
+                        <button class="ed-qa-btn ed-qa-abstain" id="globalAbstainToggle"
+                                data-active="{{ election.allow_abstain|yesno:'true,false' }}">
+                            <div class="ed-qa-icon"><i class="fas fa-hand-paper"></i></div>
+                            <div class="ed-qa-text">
+                                <span class="ed-qa-label">
+                                    Allow NOTA
+                                    <span class="ed-qa-info-icon" title="When enabled, voters can choose NOTA (None Of The Above) to skip voting for the respective positions.">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>
+                                </span>
+                                <span class="ed-qa-desc" id="globalAbstainLabel">
+                                    {% if election.allow_abstain %}NOTA enabled{% else %}NOTA is off{% endif %}
+                                </span>
+                            </div>
+                            <span class="ed-qa-toggle-track{% if election.allow_abstain %} ed-qa-toggle--on{% endif %}" id="globalAbstainTrack">
+                                <span class="ed-qa-toggle-knob"></span>
+                            </span>
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <button class="ed-qa-btn ed-qa-duplicate" data-action="duplicate">
+                        <div class="ed-qa-icon"><i class="fas fa-clone"></i></div>
+                        <div class="ed-qa-text">
+                            <span class="ed-qa-label">Clone Election</span>
+                            <span class="ed-qa-desc">Copy posts &amp; candidates</span>
+                        </div>
+                    </button>
+
+                    {% if election.can_delete %}
+                    <button class="ed-qa-btn ed-qa-delete" data-action="delete">
+                        <div class="ed-qa-icon"><i class="fas fa-trash-alt"></i></div>
+                        <div class="ed-qa-text">
+                            <span class="ed-qa-label">Delete Election</span>
+                            <span class="ed-qa-desc">Permanently remove all data</span>
+                        </div>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ RIGHT — Setup Progress & Blockchain side-by-side ═══ -->
+        <div class="ed-overview-right">
+            <div class="ed-overview-right-row">
+                <!-- Setup Progress (pre-launch only) -->
+                {% if election.is_draft %}
+                <div class="ed-section ed-setup-section ed-overview-right-card">
+                    <div class="ed-section-header">
+                        <div class="ed-section-icon" style="--sec-bg: rgba(0,122,255,.1); --sec-clr: var(--apple-blue);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div>
+                            <h3 class="ed-section-title">Setup Progress</h3>
+                            <p class="ed-section-desc">Complete all steps to launch.</p>
+                        </div>
+                    </div>
+
+                    <div class="ed-setup-content">
+                        <div class="ed-progress-ring-wrap">
+                            <svg width="90" height="90" viewBox="0 0 100 100" class="ed-progress-ring">
+                                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="7"/>
+                                <circle cx="50" cy="50" r="42" fill="none"
+                                        stroke="var(--apple-blue)" stroke-width="7"
+                                        stroke-dasharray="263.89" stroke-dashoffset="263.89"
+                                        stroke-linecap="round" transform="rotate(-90 50 50)"
+                                        class="ed-progress-ring-circle"
+                                        data-percentage="{{ setup_progress.percentage }}"/>
+                            </svg>
+                            <div class="ed-progress-ring-text">
+                                <span class="ed-progress-pct" data-target="{{ setup_progress.percentage }}">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="ed-checklist">
+                            <div class="ed-check-item {% if setup_progress.has_posts %}ed-check-done{% endif %}">
+                                <i class="fas {% if setup_progress.has_posts %}fa-check-circle{% else %}fa-circle{% endif %}"></i>
+                                <span>Positions <strong>({{ total_posts }})</strong></span>
+                            </div>
+                            <div class="ed-check-item {% if setup_progress.has_candidates and setup_progress.all_posts_have_candidates %}ed-check-done{% elif setup_progress.has_candidates %}ed-check-partial{% endif %}">
+                                <i class="fas {% if setup_progress.has_candidates and setup_progress.all_posts_have_candidates %}fa-check-circle{% elif setup_progress.has_candidates %}fa-exclamation-circle{% else %}fa-circle{% endif %}"></i>
+                                <span>Candidates <strong>({{ total_candidates }})</strong>
+                                {% if setup_progress.has_candidates and not setup_progress.all_posts_have_candidates %}
+                                    <span class="ed-check-warn" title="Some positions have no candidates">
+                                        &mdash; positions missing candidates:
+                                        {% for pname in setup_progress.posts_without_candidates %}
+                                            <em>{{ pname }}</em>{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                {% endif %}
+                                </span>
+                            </div>
+                            <div class="ed-check-item {% if setup_progress.has_voters %}ed-check-done{% endif %}">
+                                <i class="fas {% if setup_progress.has_voters %}fa-check-circle{% else %}fa-circle{% endif %}"></i>
+                                <span>Voters <strong>({{ total_voters }})</strong></span>
+                            </div>
+                            <div class="ed-check-item {% if setup_progress.can_launch %}ed-check-done ed-check-ready{% endif %}">
+                                <i class="fas {% if setup_progress.can_launch %}fa-rocket{% else %}fa-circle{% endif %}"></i>
+                                <span>Ready to launch</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if setup_progress.can_launch %}
+                    <button class="ed-setup-launch" data-action="launch">
+                        <i class="fas fa-rocket"></i> Launch Election
+                    </button>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Blockchain Status -->
+                <div class="ed-section ed-overview-right-card ed-bc-section{% if not election.is_draft %} ed-bc-section--wide{% endif %}">
+                    <div class="ed-section-header ed-bc-section-header">
+                        <div class="ed-section-icon" style="--sec-bg: rgba(88,86,214,.1); --sec-clr: var(--apple-purple, #5856d6);">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="ed-bc-header-text">
+                            <h3 class="ed-section-title">Blockchain</h3>
+                            <p class="ed-section-desc">Solana smart contract.</p>
+                        </div>
+                        {% if election.blockchain_contract_address %}
+                        <span class="ed-bc-status-pill ed-bc-status-deployed">
+                            <i class="fas fa-check-circle"></i> Deployed
+                        </span>
+                        {% else %}
+                        <span class="ed-bc-status-pill ed-bc-status-pending">
+                            <i class="fas fa-clock"></i> Pending
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="ed-bc-body">
+                        <!-- Network -->
+                        <div class="ed-bc-field">
+                            <span class="ed-bc-field-label"><i class="fas fa-network-wired"></i> Network</span>
+                            <span class="ed-bc-field-value">
+                                <span class="ed-bc-network-badge">
+                                    <span class="ed-bc-sol-dot"></span>
+                                    Solana {{ SOLANA_NETWORK|default:"Devnet"|title }}
+                                </span>
+                            </span>
+                        </div>
+
+                        {% if election.blockchain_contract_address %}
+                        <!-- Program ID -->
+                        <div class="ed-bc-field">
+                            <span class="ed-bc-field-label"><i class="fas fa-code-branch"></i> Program ID</span>
+                            <span class="ed-bc-field-value ed-bc-addr-row">
+                                <code class="ed-bc-mono" title="{{ election.blockchain_contract_address }}">{{ election.blockchain_contract_address }}</code>
+                                <button type="button" class="ed-bc-copy-btn" data-copy="{{ election.blockchain_contract_address }}" title="Copy Program ID">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <a href="{{ SOLANA_EXPLORER_URL }}/address/{{ election.blockchain_contract_address }}?{{ SOLANA_CLUSTER_PARAM }}"
+                                   class="ed-bc-explorer-btn" target="_blank" rel="noopener" title="View on Explorer">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </span>
+                        </div>
+
+                        {% if election.blockchain_deploy_tx %}
+                        <!-- Deploy TX -->
+                        <div class="ed-bc-field">
+                            <span class="ed-bc-field-label"><i class="fas fa-paper-plane"></i> Deploy Tx</span>
+                            <span class="ed-bc-field-value ed-bc-addr-row">
+                                <code class="ed-bc-mono" title="{{ election.blockchain_deploy_tx }}">{{ election.blockchain_deploy_tx }}</code>
+                                <button type="button" class="ed-bc-copy-btn" data-copy="{{ election.blockchain_deploy_tx }}" title="Copy Deploy TX">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <a href="{{ SOLANA_EXPLORER_URL }}/tx/{{ election.blockchain_deploy_tx }}?{{ SOLANA_CLUSTER_PARAM }}"
+                                   class="ed-bc-explorer-btn" target="_blank" rel="noopener" title="View transaction">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% else %}
+                        <!-- Not yet deployed -->
+                        <div class="ed-bc-field ed-bc-field--hint">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Contract is deployed automatically when you launch the election.</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1076 @@
+/* ===============================================
+   ElectON V2 — Manage My Elections (Dashboard)
+   Apple-inspired design consistent with homepage
+   =============================================== */
+@import '../shared/_orbs.css';
+
+/* ─── Page Wrapper ─── */
+.dash {
+    position: relative;
+    min-height: calc(100vh - 80px);
+    padding: 3rem 0 6rem;
+}
+
+.dash-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Animated Floating Orbs (matches homepage) ─── */
+.dash-orbs {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.dash-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: orbFloat 18s ease-in-out infinite;
+}
+
+.dash-orb-1 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.35) 0%, transparent 70%);
+    top: -8%; left: -6%;
+    animation-duration: 20s;
+}
+
+.dash-orb-2 {
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(88, 86, 214, 0.3) 0%, transparent 70%);
+    bottom: -12%; right: -4%;
+    animation-duration: 16s;
+    animation-delay: -6s;
+}
+
+.dash-orb-3 {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(52, 199, 89, 0.2) 0%, transparent 70%);
+    top: 45%; left: 58%;
+    animation-duration: 22s;
+    animation-delay: -10s;
+}
+
+[data-theme="dark"] .dash-orb { opacity: 0.25; }
+[data-theme="dark"] .dash-orb-1 { background: radial-gradient(circle, rgba(0, 122, 255, 0.45) 0%, transparent 70%); }
+[data-theme="dark"] .dash-orb-2 { background: radial-gradient(circle, rgba(88, 86, 214, 0.4) 0%, transparent 70%); }
+[data-theme="dark"] .dash-orb-3 { background: radial-gradient(circle, rgba(52, 199, 89, 0.25) 0%, transparent 70%); }
+
+/* orbFloat keyframes provided by shared/_orbs.css */
+
+/* ===============================================
+   HEADER — Dashboard Icon + Greeting + Settings
+   =============================================== */
+.dash-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding-top: 1rem;
+}
+
+.dash-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* FEAT-05: settings gear button in header */
+.dash-header-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.04);
+    color: var(--text-tertiary);
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background .2s, color .2s, transform .3s;
+    flex-shrink: 0;
+}
+.dash-header-settings:hover {
+    background: rgba(0,122,255,.1);
+    color: var(--apple-blue, #007aff);
+    transform: rotate(45deg);
+}
+[data-theme="dark"] .dash-header-settings {
+    background: rgba(255,255,255,.06);
+    color: var(--text-secondary);
+}
+[data-theme="dark"] .dash-header-settings:hover {
+    background: rgba(0,122,255,.18);
+    color: var(--apple-blue, #0a84ff);
+}
+
+.dash-icon-circle {
+    width: 42px; height: 42px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-indigo));
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
+    flex-shrink: 0;
+}
+
+.dash-headline {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dash-subheadline {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 480px;
+}
+
+/* Settings Button (replaces blue "New Election") */
+.dash-btn-settings {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: background var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.dash-btn-settings:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: var(--text-primary);
+}
+
+.dash-btn-settings i {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: transform 0.4s var(--ease-spring);
+}
+
+.dash-btn-settings:hover i {
+    transform: rotate(90deg);
+}
+
+[data-theme="dark"] .dash-btn-settings {
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] .dash-btn-settings:hover {
+    background: rgba(58, 58, 60, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ===============================================
+   STATS STRIP
+   =============================================== */
+.dash-stats {
+    margin-bottom: 2.5rem;
+}
+
+.dash-stats-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.75rem 2.5rem;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .dash-stats-grid {
+    background: rgba(28, 28, 30, 0.7);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dash-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.dash-stat-icon {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-lg);
+    background: var(--s-bg);
+    color: var(--s-clr);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: transform var(--transition-normal);
+}
+
+.dash-stat:hover .dash-stat-icon {
+    transform: scale(1.1);
+}
+
+.dash-stat-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.dash-stat-value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.dash-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-top: 0.2rem;
+    white-space: nowrap;
+}
+
+.dash-stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+[data-theme="dark"] .dash-stat-divider {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ===============================================
+   TOOLBAR — All Elections heading + Search + Sort + New
+   =============================================== */
+.dash-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+}
+
+.dash-toolbar-left {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+
+.dash-section-heading {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.dash-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ── Search ── */
+.dash-search {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.dash-search-toggle {
+    width: 38px; height: 38px;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-normal), border-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.dash-search-toggle:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 122, 255, 0.2);
+    color: var(--apple-blue);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .dash-search-toggle {
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .dash-search-toggle:hover {
+    background: rgba(58, 58, 60, 0.9);
+    border-color: rgba(0, 122, 255, 0.3);
+}
+
+.dash-search-input {
+    width: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    outline: none;
+    opacity: 0;
+    transition: width 0.35s var(--ease-out-expo), opacity 0.25s ease, padding 0.35s var(--ease-out-expo);
+}
+
+.dash-search.open .dash-search-input {
+    width: 200px;
+    padding: 0.5rem 0.75rem;
+    opacity: 1;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    margin-left: 0.375rem;
+}
+
+[data-theme="dark"] .dash-search.open .dash-search-input {
+    background: rgba(44, 44, 46, 0.85);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dash-search.open .dash-search-toggle {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--apple-blue);
+    border-color: rgba(0, 122, 255, 0.2);
+}
+[data-theme="dark"] .dash-search.open .dash-search-toggle {
+    background: rgba(0, 122, 255, 0.2);
+    border-color: rgba(0, 122, 255, 0.35);
+}
+
+/* ── Sort ── */
+.dash-sort {
+    position: relative;
+}
+
+.dash-sort-toggle {
+    width: 38px; height: 38px;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-normal), border-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.dash-sort-toggle:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 122, 255, 0.2);
+    color: var(--apple-blue);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .dash-sort-toggle {
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .dash-sort-toggle:hover {
+    background: rgba(58, 58, 60, 0.9);
+    border-color: rgba(0, 122, 255, 0.3);
+}
+
+.dash-sort-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 190px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    padding: 0.5rem;
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.96);
+    transition: opacity 0.2s ease, transform 0.25s var(--ease-spring), visibility 0.2s ease;
+}
+
+.dash-sort-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+[data-theme="dark"] .dash-sort-dropdown {
+    background: rgba(44, 44, 46, 0.97);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.dash-sort-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    text-align: left;
+}
+
+.dash-sort-option:hover {
+    background: rgba(0, 122, 255, 0.08);
+    color: var(--apple-blue);
+}
+[data-theme="dark"] .dash-sort-option:hover {
+    background: rgba(0, 122, 255, 0.15);
+}
+
+.dash-sort-option.active {
+    color: var(--apple-blue);
+    font-weight: 600;
+}
+
+.dash-sort-option .status-dot {
+    width: 6px; height: 6px;
+    flex-shrink: 0;
+}
+
+.dash-sort-option i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    color: var(--text-tertiary);
+}
+
+.dash-sort-option.active i,
+.dash-sort-option:hover i {
+    color: var(--apple-blue);
+}
+
+.dash-sort-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0.35rem 0.5rem;
+}
+[data-theme="dark"] .dash-sort-divider {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── + New Election Button ── */
+.dash-btn-new {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.25rem;
+    background: var(--apple-blue);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.dash-btn-new:hover {
+    background: var(--apple-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.28);
+    color: #fff;
+}
+
+/* No-results message — hidden by default, toggled by JS via .show */
+.dash-no-results {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-tertiary);
+}
+
+.dash-no-results.show {
+    display: block;
+}
+
+.dash-no-results i {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.dash-no-results p {
+    font-size: 0.95rem;
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* ===============================================
+   ELECTION CARDS
+   =============================================== */
+.dash-elections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+}
+
+.dash-election-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(28px) saturate(1.6);
+    -webkit-backdrop-filter: blur(28px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    color: inherit;
+    cursor: pointer;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal), background var(--transition-normal);
+}
+
+/* Status-colored card accents — light mode */
+.dash-election-card:has(.ribbon-active) {
+    border-color: rgba(52, 199, 89, 0.18);
+    box-shadow: 0 2px 8px rgba(52, 199, 89, 0.06), inset 0 0 0 0.5px rgba(52, 199, 89, 0.08);
+}
+.dash-election-card:has(.ribbon-pre-launch) {
+    border-color: rgba(0, 122, 255, 0.18);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.06), inset 0 0 0 0.5px rgba(0, 122, 255, 0.08);
+}
+.dash-election-card:has(.ribbon-inactive) {
+    border-color: rgba(255, 204, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(255, 204, 0, 0.06), inset 0 0 0 0.5px rgba(255, 204, 0, 0.08);
+}
+.dash-election-card:has(.ribbon-concluded) {
+    border-color: rgba(255, 59, 48, 0.18);
+    box-shadow: 0 2px 8px rgba(255, 59, 48, 0.06), inset 0 0 0 0.5px rgba(255, 59, 48, 0.08);
+}
+
+[data-theme="dark"] .dash-election-card {
+    background: rgba(38, 38, 42, 0.55);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Status-colored card accents — dark mode */
+[data-theme="dark"] .dash-election-card:has(.ribbon-active) {
+    border-color: rgba(52, 199, 89, 0.22);
+    box-shadow: 0 2px 12px rgba(52, 199, 89, 0.08), inset 0 0 0 0.5px rgba(52, 199, 89, 0.1);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-pre-launch) {
+    border-color: rgba(0, 122, 255, 0.22);
+    box-shadow: 0 2px 12px rgba(0, 122, 255, 0.08), inset 0 0 0 0.5px rgba(0, 122, 255, 0.1);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-inactive) {
+    border-color: rgba(255, 204, 0, 0.22);
+    box-shadow: 0 2px 12px rgba(255, 204, 0, 0.08), inset 0 0 0 0.5px rgba(255, 204, 0, 0.1);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-concluded) {
+    border-color: rgba(255, 59, 48, 0.22);
+    box-shadow: 0 2px 12px rgba(255, 59, 48, 0.08), inset 0 0 0 0.5px rgba(255, 59, 48, 0.1);
+}
+
+.dash-election-card:hover {
+    transform: translateY(-6px);
+    color: inherit;
+}
+.dash-election-card:has(.ribbon-active):hover {
+    box-shadow: 0 16px 48px rgba(52, 199, 89, 0.12);
+    border-color: rgba(52, 199, 89, 0.3);
+}
+.dash-election-card:has(.ribbon-pre-launch):hover {
+    box-shadow: 0 16px 48px rgba(0, 122, 255, 0.12);
+    border-color: rgba(0, 122, 255, 0.3);
+}
+.dash-election-card:has(.ribbon-inactive):hover {
+    box-shadow: 0 16px 48px rgba(255, 204, 0, 0.12);
+    border-color: rgba(255, 204, 0, 0.3);
+}
+.dash-election-card:has(.ribbon-concluded):hover {
+    box-shadow: 0 16px 48px rgba(255, 59, 48, 0.12);
+    border-color: rgba(255, 59, 48, 0.3);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-active):hover {
+    box-shadow: 0 16px 48px rgba(52, 199, 89, 0.15);
+    border-color: rgba(52, 199, 89, 0.4);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-pre-launch):hover {
+    box-shadow: 0 16px 48px rgba(0, 122, 255, 0.15);
+    border-color: rgba(0, 122, 255, 0.4);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-inactive):hover {
+    box-shadow: 0 16px 48px rgba(255, 204, 0, 0.15);
+    border-color: rgba(255, 204, 0, 0.4);
+}
+[data-theme="dark"] .dash-election-card:has(.ribbon-concluded):hover {
+    box-shadow: 0 16px 48px rgba(255, 59, 48, 0.15);
+    border-color: rgba(255, 59, 48, 0.4);
+}
+
+/* Card status ribbon (colored top bar) */
+.dash-card-ribbon {
+    height: 4px;
+    width: 100%;
+}
+.ribbon-active   { background: linear-gradient(90deg, var(--apple-green), var(--apple-mint)); }
+.ribbon-pre-launch { background: linear-gradient(90deg, var(--apple-blue), var(--apple-indigo)); }
+.ribbon-inactive { background: linear-gradient(90deg, var(--apple-yellow), var(--apple-orange)); }
+.ribbon-concluded { background: linear-gradient(90deg, var(--apple-red), var(--apple-orange)); }
+
+/* Card Top */
+.dash-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem 1.5rem 0;
+    gap: 0.75rem;
+}
+
+/* Card Identity (name + ID) */
+.dash-card-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.dash-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.dash-card-id {
+    font-size: 0.72rem;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+.dash-card-id i {
+    font-size: 0.62rem;
+    margin-right: 0.2rem;
+    opacity: 0.7;
+}
+
+.dash-card-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* Status Badge */
+.dash-card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-pre-launch  { background: rgba(0, 122, 255, 0.12); color: var(--apple-blue); }
+.status-pre-launch .status-dot { background: var(--apple-blue); }
+
+.status-inactive    { background: rgba(255, 204, 0, 0.12); color: var(--apple-yellow); }
+.status-inactive .status-dot { background: var(--apple-yellow); }
+
+.status-active      { background: rgba(52, 199, 89, 0.12); color: var(--apple-green); }
+.status-active .status-dot { background: var(--apple-green); animation: statusPulse 2s ease-in-out infinite; }
+
+.status-concluded   { background: rgba(255, 59, 48, 0.12); color: var(--apple-red); }
+.status-concluded .status-dot { background: var(--apple-red); }
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* Card Dates Row */
+.dash-card-dates {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 1.5rem 0.75rem;
+}
+
+.dash-date-arrow {
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+.dash-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    min-width: 0;
+}
+
+.dash-meta-item i {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Card Stats Grid */
+.dash-card-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .dash-card-stats {
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.dash-card-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.4rem 0;
+}
+
+.dash-card-stat i {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    margin-bottom: 0.15rem;
+}
+
+.dash-card-stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.dash-card-stat-label {
+    font-size: 0.62rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Voter Turnout Progress */
+.dash-turnout {
+    padding: 0 1.5rem 0.75rem;
+}
+
+.dash-turnout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.dash-turnout-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dash-turnout-pct {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.dash-turnout-track {
+    height: 5px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+[data-theme="dark"] .dash-turnout-track {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dash-turnout-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s var(--ease-out-expo);
+    min-width: 0;
+}
+
+.fill-active    { background: linear-gradient(90deg, var(--apple-green), var(--apple-mint)); }
+.fill-concluded { background: linear-gradient(90deg, var(--apple-red), var(--apple-orange)); }
+.fill-default   { background: linear-gradient(90deg, var(--apple-gray), var(--apple-gray-dark)); }
+
+/* Card Actions (status + manage button, vertical) */
+.dash-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.dash-card-manage {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--apple-blue);
+    background: rgba(0, 122, 255, 0.08);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-normal), transform var(--transition-normal),
+                box-shadow var(--transition-normal), border-color var(--transition-normal),
+                gap var(--transition-normal);
+}
+
+.dash-card-manage:hover {
+    background: rgba(0, 122, 255, 0.14);
+    border-color: rgba(0, 122, 255, 0.3);
+    transform: translateX(2px);
+    gap: 0.55rem;
+    color: var(--apple-blue);
+}
+
+.dash-card-manage i {
+    font-size: 0.72rem;
+    transition: transform var(--transition-normal);
+}
+
+.dash-card-manage:hover i {
+    transform: translateX(2px);
+}
+
+[data-theme="dark"] .dash-card-manage {
+    background: rgba(0, 122, 255, 0.15);
+    border-color: rgba(0, 122, 255, 0.25);
+}
+[data-theme="dark"] .dash-card-manage:hover {
+    background: rgba(0, 122, 255, 0.22);
+    border-color: rgba(0, 122, 255, 0.4);
+}
+
+/* ===============================================
+   EMPTY STATE
+   =============================================== */
+.dash-empty {
+    text-align: center;
+    padding: 5rem 2rem;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .dash-empty {
+    background: rgba(28, 28, 30, 0.7);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dash-empty-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: rgba(0, 122, 255, 0.08);
+    color: var(--apple-blue);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+[data-theme="dark"] .dash-empty-icon {
+    background: rgba(0, 122, 255, 0.15);
+}
+
+.dash-empty h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+}
+
+.dash-empty p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0 0 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* ===============================================
+   SCROLL ANIMATION (same system as homepage)
+   =============================================== */
+.dash-header.anim,
+.dash-stat.anim,
+.dash-toolbar.anim,
+.dash-election-card.anim,
+.dash-empty.anim {
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.dash-header.anim.in,
+.dash-stat.anim.in,
+.dash-toolbar.anim.in,
+.dash-election-card.anim.in,
+.dash-empty.anim.in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+}
+
+/* Stagger delays */
+.dash-stat.anim:nth-child(2)           { transition-delay: 0.05s; }
+.dash-stat.anim:nth-child(4)           { transition-delay: 0.1s; }
+.dash-stat.anim:nth-child(6)           { transition-delay: 0.15s; }
+.dash-stat.anim:nth-child(8)           { transition-delay: 0.2s; }
+
+.dash-election-card.anim:nth-child(1)  { transition-delay: 0.0s; }
+.dash-election-card.anim:nth-child(2)  { transition-delay: 0.06s; }
+.dash-election-card.anim:nth-child(3)  { transition-delay: 0.12s; }
+.dash-election-card.anim:nth-child(4)  { transition-delay: 0.18s; }
+.dash-election-card.anim:nth-child(5)  { transition-delay: 0.24s; }
+.dash-election-card.anim:nth-child(6)  { transition-delay: 0.30s; }
+
+/* ===============================================
+   RESPONSIVE
+   =============================================== */
+@media (max-width: 1024px) {
+    .dash-elections-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .dash { padding: 2rem 0 4rem; }
+    .dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .dash-stats-grid {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    .dash-stat-divider { display: none; }
+    .dash-stat { flex: 1 1 45%; min-width: 120px; }
+    .dash-elections-grid { grid-template-columns: 1fr; }
+    .dash-headline { font-size: 1.75rem; }
+    .dash-toolbar { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+    .dash-toolbar-left { justify-content: space-between; }
+    .dash-toolbar-right { justify-content: flex-end; }
+    .dash-btn-new-label { display: none; }
+    .dash-search.open .dash-search-input { width: 140px; }
+}
+
+@media (max-width: 480px) {
+    .dash-container { padding: 0 1rem; }
+    .dash-stat { flex: 1 1 100%; }
+    .dash-card-top { padding: 1.25rem 1.25rem 0; }
+    .dash-card-dates { padding: 0.5rem 1.25rem; }
+    .dash-card-stats { padding: 0.5rem 1.25rem; grid-template-columns: repeat(2, 1fr); }
+    .dash-turnout { padding: 0 1.25rem 0.75rem; }
+
+    .dash-search.open .dash-search-input { width: 110px; }
+}

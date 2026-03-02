@@ -1,0 +1,16 @@
+{% extends "emails/_base_email.html" %}
+
+{% block email_title %}Email Verification — ElectON{% endblock %}
+
+{% block email_subtitle %}Verify Your Email{% endblock %}
+
+{% block email_content %}
+<p>Hi {{ user_name }},</p>
+<p>Use this verification code to complete your registration:</p>
+
+<div class="email-code-box">{{ verification_code }}</div>
+
+<p class="email-info">This code expires in <strong>{{ expiry_minutes }} minutes</strong>.</p>
+
+<p class="email-info">If you did not create an ElectON account, please ignore this email.</p>
+{% endblock %}

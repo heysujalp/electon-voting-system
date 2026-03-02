@@ -1,0 +1,637 @@
+/* ═══════════════════════════════════════════════════════════════
+   Overview Tab — Quick Actions (card-style), Blockchain
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── OVERVIEW LEFT/RIGHT GRID ─── */
+.ed-overview-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+.ed-overview-left,
+.ed-overview-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Right column: setup + blockchain side-by-side */
+.ed-overview-right-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
+}
+.ed-overview-right-card {
+    display: flex;
+    flex-direction: column;
+}
+.ed-overview-right-card .ed-section-header {
+    gap: .6rem;
+}
+
+@media (max-width: 992px) {
+    .ed-overview-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .ed-overview-right-row { grid-template-columns: 1fr; }
+}
+
+/* ─── SETUP PROGRESS (pre-launch) ─── */
+.ed-setup-section { overflow: hidden; }
+
+.ed-setup-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ed-progress-ring-wrap {
+    position: relative;
+    width: 90px; height: 90px;  /* DES-02: match SVG width/height="90" */
+    flex-shrink: 0;
+}
+.ed-progress-ring { display: block; }
+.ed-progress-ring-circle {
+    transition: stroke-dashoffset .8s cubic-bezier(.4, 0, .2, 1);
+}
+.ed-progress-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ed-progress-pct {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--apple-blue);
+    font-variant-numeric: tabular-nums;
+}
+
+.ed-checklist {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+.ed-check-item {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-size: .82rem;
+    color: var(--text-secondary);
+    transition: color .3s;
+}
+.ed-check-item i {
+    font-size: .85rem;
+    color: var(--text-tertiary);
+    transition: color .3s, transform .3s;
+}
+.ed-check-item.ed-check-done { color: var(--text-primary); }
+.ed-check-item.ed-check-done i {
+    color: var(--apple-green, #34c759);
+    transform: scale(1.1);
+}
+.ed-check-item.ed-check-ready i { color: var(--apple-blue); }
+.ed-check-item strong {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Dark mode for setup progress */
+[data-theme="dark"] .ed-progress-ring circle:first-child {
+    stroke: rgba(255,255,255,.06);
+}
+
+@media (max-width: 480px) {
+    .ed-setup-content { flex-direction: column; text-align: center; }
+    .ed-checklist { align-items: center; }
+}
+
+/* ─── QUICK ACTION CARDS ─── */
+.ed-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+}
+
+.ed-qa-btn {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .7rem .85rem;
+    background: var(--glass-bg, rgba(255,255,255,.5));
+    border: 1px solid var(--glass-border, rgba(0,0,0,.06));
+    border-radius: var(--radius-lg, 12px);
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    color: inherit;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+    position: relative;
+}
+.ed-qa-btn:hover {
+    background: rgba(0,0,0,.02);
+    border-color: rgba(0,0,0,.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.ed-qa-icon {
+    width: 38px; height: 38px;
+    min-width: 38px;
+    border-radius: var(--radius-md, 8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    transition: all .2s;
+}
+
+.ed-qa-text {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    flex: 1;
+}
+.ed-qa-label {
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+}
+.ed-qa-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .68rem;
+    color: var(--text-tertiary);
+    cursor: help;
+    position: relative;
+    transition: color .2s;
+}
+.ed-qa-info-icon:hover { color: var(--apple-blue, #007aff); }
+.ed-qa-info-icon::after {
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    background: rgba(30,30,34,.92);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 400;
+    line-height: 1.45;
+    padding: .55rem .75rem;
+    border-radius: 8px;
+    white-space: normal;
+    width: 220px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .18s;
+    z-index: 10;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+}
+.ed-qa-info-icon:hover::after { opacity: 1; }
+[data-theme="dark"] .ed-qa-info-icon::after {
+    background: rgba(50,50,55,.95);
+}
+.ed-qa-desc {
+    font-size: .7rem;
+    color: var(--text-tertiary);
+}
+
+.ed-qa-chevron {
+    font-size: .65rem;
+    color: var(--text-tertiary);
+    transition: transform .25s;
+    margin-left: auto;
+}
+.ed-qa-btn.ed-qa-expanded .ed-qa-chevron { transform: rotate(180deg); }
+
+/* Variant colours */
+.ed-qa-preview .ed-qa-icon  { background: rgba(0,122,255,.1);  color: var(--apple-blue); }
+.ed-qa-duplicate .ed-qa-icon{ background: rgba(88,86,214,.1);  color: var(--apple-purple, #5856d6); }
+.ed-qa-delete .ed-qa-icon   { background: rgba(255,59,48,.08); color: var(--apple-red, #ff3b30); }
+.ed-qa-delete:hover         { border-color: rgba(255,59,48,.2); }
+
+/* Layout: Preview full-width row 1 */
+.ed-qa-full { grid-column: 1 / -1; }
+
+/* Split row — Preview Ballot + Allow Abstain side by side */
+.ed-qa-row {
+    display: contents;           /* children participate in parent grid */
+}
+
+/* ─── Global Abstain toggle button ─── */
+.ed-qa-abstain .ed-qa-icon { background: rgba(255,149,0,.1); color: var(--apple-orange, #ff9500); }
+
+.ed-qa-toggle-track {
+    width: 34px;
+    height: 20px;
+    min-width: 34px;
+    border-radius: 10px;
+    background: rgba(0,0,0,.15);
+    position: relative;
+    margin-left: auto;
+    transition: background .25s;
+    flex-shrink: 0;
+}
+.ed-qa-toggle--on { background: var(--apple-green, #34c759); }
+.ed-qa-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.18);
+    transition: transform .25s;
+}
+.ed-qa-toggle--on .ed-qa-toggle-knob { transform: translateX(14px); }
+[data-theme="dark"] .ed-qa-toggle-track { background: rgba(255,255,255,.15); }
+[data-theme="dark"] .ed-qa-toggle--on { background: var(--apple-green, #30d158); }
+
+/* ─── Launch button in Setup Progress ─── */
+.ed-setup-launch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    width: 100%;
+    margin-top: .75rem;
+    padding: .55rem 1rem;
+    font-size: .82rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--apple-green), #28c840);
+    border: none;
+    border-radius: var(--radius-lg, 12px);
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 2px 8px rgba(52,199,89,.25);
+}
+.ed-setup-launch:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(52,199,89,.35);
+}
+.ed-setup-launch i { font-size: .75rem; }
+
+/* ─── Password confirmation modal (for delete) ─── */
+.ed-pw-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.ed-pw-overlay.active {
+    display: flex;
+}
+.ed-pw-card {
+    background: rgba(255,255,255,.97);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-2xl, 20px);
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
+    animation: ed-fadeIn .2s ease;
+}
+.ed-pw-header {
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+.ed-pw-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto .75rem;
+    border-radius: 50%;
+    background: rgba(255,59,48,.1);
+    color: var(--apple-red, #ff3b30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+.ed-pw-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 .25rem;
+}
+.ed-pw-subtitle {
+    font-size: .8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+.ed-pw-field {
+    margin-bottom: 1rem;
+}
+.ed-pw-input-wrap {
+    position: relative;
+}
+.ed-pw-input-wrap .ed-input {
+    padding-left: .75rem;
+    padding-right: 2.5rem;
+}
+.ed-pw-toggle {
+    position: absolute;
+    right: .5rem; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: .8rem;
+    padding: .25rem;
+}
+.ed-pw-toggle:hover { color: var(--text-primary); }
+.ed-pw-actions {
+    display: flex;
+    gap: .5rem;
+}
+.ed-pw-actions .ed-btn-danger,
+.ed-pw-actions .ed-btn-ghost {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Dark mode for password modal */
+[data-theme="dark"] .ed-pw-overlay { background: rgba(0,0,0,.6); }
+[data-theme="dark"] .ed-pw-card {
+    background: rgba(30,30,34,.95);
+    border-color: rgba(255,255,255,.08);
+}
+
+/* ─── Dark mode for quick actions ─── */
+[data-theme="dark"] .ed-qa-btn {
+    background: rgba(255,255,255,.03);
+    border-color: rgba(255,255,255,.06);
+}
+[data-theme="dark"] .ed-qa-btn:hover {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.1);
+}
+[data-theme="dark"] .ed-qa-expand {
+    background: rgba(255,149,0,.04);
+    border-color: rgba(255,149,0,.1);
+}
+
+/* ─── BLOCKCHAIN PANEL ─── */
+.ed-bc-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.ed-bc-section-header {
+    flex-wrap: wrap;
+    gap: .6rem;
+    row-gap: .45rem;
+}
+.ed-bc-header-text { flex: 1; min-width: 0; }
+
+/* Status pill in header */
+.ed-bc-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: .2rem .65rem;
+    border-radius: 50px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ed-bc-status-deployed {
+    background: rgba(52,199,89,.1);
+    color: var(--apple-green, #34c759);
+    border: 1px solid rgba(52,199,89,.2);
+}
+.ed-bc-status-pending {
+    background: rgba(0,0,0,.05);
+    color: var(--text-tertiary);
+    border: 1px solid rgba(0,0,0,.07);
+}
+[data-theme="dark"] .ed-bc-status-pending {
+    background: rgba(255,255,255,.05);
+    border-color: rgba(255,255,255,.08);
+}
+
+/* Body — stacked field rows */
+.ed-bc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: .25rem 0 .5rem;
+    flex: 1;
+}
+.ed-bc-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .55rem .25rem;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+}
+[data-theme="dark"] .ed-bc-field { border-bottom-color: rgba(255,255,255,.06); }
+.ed-bc-field:last-child { border-bottom: none; }
+
+.ed-bc-field-label {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ed-bc-field-label i { font-size: .6rem; color: var(--text-tertiary); }
+
+.ed-bc-field-value {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .72rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 0;
+}
+
+/* Network badge */
+.ed-bc-network-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: rgba(88,86,214,.08);
+    border: 1px solid rgba(88,86,214,.15);
+    color: var(--apple-purple, #5856d6);
+    font-size: .7rem;
+    font-weight: 700;
+    padding: .15rem .55rem;
+    border-radius: 50px;
+}
+[data-theme="dark"] .ed-bc-network-badge {
+    background: rgba(167,139,250,.1);
+    border-color: rgba(167,139,250,.2);
+    color: #a78bfa;
+}
+.ed-bc-sol-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9945ff, #14f195);
+    flex-shrink: 0;
+}
+
+/* Monospace address */
+.ed-bc-mono {
+    font-family: 'SF Mono', ui-monospace, monospace;
+    font-size: .67rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    background: rgba(0,0,0,.04);
+    padding: .12rem .4rem;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+    display: inline-block;
+}
+[data-theme="dark"] .ed-bc-mono { background: rgba(255,255,255,.06); }
+
+/* Address row: mono + explorer button */
+.ed-bc-addr-row {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Explorer icon button */
+.ed-bc-explorer-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: rgba(88,86,214,.07);
+    color: var(--apple-purple, #5856d6);
+    font-size: .55rem;
+    flex-shrink: 0;
+    transition: background .15s, color .15s;
+    text-decoration: none;
+}
+.ed-bc-explorer-btn:hover {
+    background: rgba(88,86,214,.15);
+    color: var(--apple-purple, #5856d6);
+}
+[data-theme="dark"] .ed-bc-explorer-btn {
+    background: rgba(167,139,250,.08);
+    color: #a78bfa;
+}
+[data-theme="dark"] .ed-bc-explorer-btn:hover { background: rgba(167,139,250,.18); }
+
+/* Hint field (not deployed) */
+.ed-bc-field--hint {
+    gap: .5rem;
+    font-size: .72rem;
+    color: var(--text-tertiary);
+    font-style: italic;
+    justify-content: flex-start;
+    border-bottom: none;
+    padding-top: .25rem;
+}
+.ed-bc-field--hint i { font-size: .68rem; color: var(--apple-blue, #007aff); flex-shrink: 0; }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .ed-qa-btn { flex-wrap: wrap; }
+    .ed-pw-card { margin: 0 1rem; max-width: none; }
+}
+
+/* ─── Copy-to-clipboard button (blockchain fields) ─── */
+.ed-bc-copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(0,0,0,.05);
+    color: var(--text-tertiary);
+    font-size: .55rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.ed-bc-copy-btn:hover {
+    background: rgba(0,122,255,.1);
+    color: var(--apple-blue, #007aff);
+}
+[data-theme="dark"] .ed-bc-copy-btn {
+    background: rgba(255,255,255,.07);
+    color: var(--text-tertiary);
+}
+[data-theme="dark"] .ed-bc-copy-btn:hover {
+    background: rgba(0,122,255,.2);
+    color: #0a84ff;
+}
+
+
+/* --- Wide blockchain section (post-launch, spans full inner grid) --- */
+.ed-bc-section--wide {
+    grid-column: 1 / -1;
+}
+
+/* Post-launch: stack field rows, give addresses full available width */
+.ed-bc-section--wide .ed-bc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.ed-bc-section--wide .ed-bc-field {
+    padding: .65rem .35rem;
+}
+.ed-bc-section--wide .ed-bc-field-label {
+    font-size: .74rem;
+    min-width: 95px;
+}
+.ed-bc-section--wide .ed-bc-field-value {
+    flex: 1;
+    min-width: 0;
+}
+.ed-bc-section--wide .ed-bc-addr-row {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+.ed-bc-section--wide .ed-bc-mono {
+    max-width: none;
+    flex: 1 1 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Solana gradient top-bar signals live-on-chain status */
+.ed-bc-section--wide::before {
+    content: '';
+    display: block;
+    height: 3px;
+    margin: -1rem -1.25rem 1rem;
+    background: linear-gradient(90deg, #9945ff 0%, #14f195 100%);
+    border-radius: var(--radius-lg, 12px) var(--radius-lg, 12px) 0 0;
+    opacity: .55;
+}

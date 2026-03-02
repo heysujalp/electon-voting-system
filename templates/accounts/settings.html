@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/accounts/settings.css' %}">
+{% endblock %}
+
+{% block full_content %}
+<div class="settings-page">
+    <!-- Floating Orbs -->
+    <div class="settings-orbs">
+        <div class="settings-orb settings-orb-1"></div>
+        <div class="settings-orb settings-orb-2"></div>
+        <div class="settings-orb settings-orb-3"></div>
+    </div>
+
+    <div class="settings-container">
+        <div class="settings-page-header">
+            <div class="settings-page-header-icon">
+                <i class="fas fa-gear"></i>
+            </div>
+            <div>
+                <h1>Settings</h1>
+                <p>Manage your account, security, and preferences</p>
+            </div>
+        </div>
+
+        <div class="settings-layout">
+            <!-- ═══ Sidebar ═══ -->
+            <aside class="settings-sidebar">
+                <ul class="settings-nav" role="tablist">
+                    <li>
+                        <button class="settings-nav-item active" data-panel="profile" role="tab" aria-selected="true">
+                            <i class="fas fa-user"></i><span>Profile</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="settings-nav-item" data-panel="security" role="tab" aria-selected="false">
+                            <i class="fas fa-shield-halved"></i><span>Security</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="settings-nav-item" data-panel="subscription" role="tab" aria-selected="false">
+                            <i class="fas fa-cube"></i><span>Subscription</span>
+                        </button>
+                    </li>
+                    <li><div class="settings-nav-divider"></div></li>
+                    <li>
+                        <button class="settings-nav-item nav-danger" data-panel="danger" role="tab" aria-selected="false">
+                            <i class="fas fa-trash-can"></i><span>Delete Account</span>
+                        </button>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- ═══ Content Panels ═══ -->
+            <div class="settings-content">
+
+                <!-- ─── PROFILE PANEL ─── -->
+                <div class="settings-panel active" id="panel-profile" role="tabpanel">
+                    <div class="settings-section-header">
+                        <h2>Profile</h2>
+                        <p>Your personal information and account details</p>
+                    </div>
+
+                    <!-- Account Info (read-only) -->
+                    <div class="settings-card">
+                        <div class="settings-card-title">
+                            <i class="fas fa-circle-info"></i>
+                            Account Information
+                        </div>
+                        <div class="settings-info-row">
+                            <span class="settings-info-label">Member Since</span>
+                            <span class="settings-info-value">{{ user.created_at|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="settings-info-row">
+                            <span class="settings-info-label">Elections Created</span>
+                            <span class="settings-info-value">{{ election_count }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="settings-card" data-field="email">
+                        <div class="settings-card-header-row">
+                            <div class="settings-card-title">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </div>
+                            {% if can_change_email %}
+                            <button type="button" class="settings-edit-btn" data-edit="email" title="Edit email">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            {% else %}
+                            <span class="settings-cooldown-badge" title="Next change: {{ next_email_change|date:'M d, Y' }}">
+                                <i class="fas fa-lock"></i> Locked until {{ next_email_change|date:"M d, Y" }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <!-- View mode -->
+                        <div class="settings-view-mode" id="emailView">
+                            <div class="settings-info-row">
+                                <span class="settings-info-label">Email Address</span>
+                                <span class="settings-info-value" id="emailDisplay">
+                                    {{ user.email }}
+                                    {% if user.email_verified %}
+                                        <span class="badge-verified"><i class="fas fa-check-circle"></i> Verified</span>
+                                    {% else %}
+                                        <span class="badge-unverified"><i class="fas fa-exclamation-circle"></i> Unverified</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="settings-edit-mode" id="emailEdit" style="display:none">
+                            <!-- Step 1: Enter new email & send verification code -->
+                            <form id="emailSendForm" action="#">
+                                {% csrf_token %}
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_email">New Email Address</label>
+                                    <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter new email address" autocomplete="email" required>
+                                </div>
+                                <div class="settings-edit-actions">
+                                    <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                        <i class="fas fa-paper-plane"></i> Send Verification Code
+                                    </button>
+                                    <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="email">Cancel</button>
+                                </div>
+                            </form>
+                            <!-- Step 2: Enter verification code & update email -->
+                            <div id="emailVerifyStep" style="display:none">
+                                <p class="settings-verify-hint"><i class="fas fa-envelope-open-text"></i> A 6-digit code has been sent to your new email. Enter it below.</p>
+                                <form id="emailVerifyForm" action="#">
+                                    {% csrf_token %}
+                                    <div class="settings-field-group">
+                                        <label class="settings-field-label" for="email_verify_code">Verification Code</label>
+                                        <input type="text" name="code" id="email_verify_code" class="form-control modal-code-input" placeholder="000000" maxlength="6" inputmode="numeric" required autocomplete="one-time-code">
+                                    </div>
+                                    <div class="settings-edit-actions">
+                                        <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                            <i class="fas fa-check"></i> Update Email
+                                        </button>
+                                        <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="email">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="settings-card" data-field="fullname">
+                        <div class="settings-card-header-row">
+                            <div class="settings-card-title">
+                                <i class="fas fa-signature"></i>
+                                Full Name
+                            </div>
+                            <button type="button" class="settings-edit-btn" data-edit="fullname" title="Edit name">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                        </div>
+                        <div class="settings-view-mode" id="fullnameView">
+                            <div class="settings-display-value" id="fullnameDisplay">{{ user.full_name }}</div>
+                        </div>
+                        <div class="settings-edit-mode" id="fullnameEdit" style="display:none">
+                            <form id="fullNameForm" action="#">
+                                {% csrf_token %}
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_full_name">Full Name</label>
+                                    {{ full_name_form.full_name }}
+                                </div>
+                                <div class="settings-edit-actions">
+                                    <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                        <i class="fas fa-check"></i> Update
+                                    </button>
+                                    <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="fullname">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="settings-card" data-field="username">
+                        <div class="settings-card-header-row">
+                            <div class="settings-card-title">
+                                <i class="fas fa-at"></i>
+                                Username
+                            </div>
+                            {% if can_change_username %}
+                            <button type="button" class="settings-edit-btn" data-edit="username" title="Edit username">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            {% else %}
+                            <span class="settings-cooldown-badge" title="Next change: {{ next_username_change|date:'M d, Y' }}">
+                                <i class="fas fa-lock"></i> Locked until {{ next_username_change|date:"M d, Y" }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="settings-view-mode" id="usernameView">
+                            <div class="settings-display-value" id="usernameDisplay">{{ user.username }}</div>
+                        </div>
+                        <div class="settings-edit-mode" id="usernameEdit" style="display:none">
+                            <form id="usernameForm" action="#">
+                                {% csrf_token %}
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_username">Username</label>
+                                    {{ username_form.username }}
+                                    <div class="settings-username-status" id="usernameStatus"></div>
+                                </div>
+                                <div class="settings-edit-actions">
+                                    <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                        <i class="fas fa-check"></i> Update
+                                    </button>
+                                    <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="username">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── SECURITY PANEL ─── -->
+                <div class="settings-panel" id="panel-security" role="tabpanel">
+                    <div class="settings-section-header">
+                        <h2>Security</h2>
+                        <p>Password and security question settings</p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="settings-card" data-field="password">
+                        <div class="settings-card-header-row">
+                            <div class="settings-card-title">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </div>
+                            <button type="button" class="settings-edit-btn" data-edit="password" title="Update password">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                        </div>
+                        <div class="settings-view-mode" id="passwordView">
+                            <div class="settings-last-changed" id="passwordLastChanged">
+                                {% if user.password_last_changed %}
+                                    Last changed {{ user.password_last_changed|date:"F j, Y" }}
+                                {% else %}
+                                    Never changed since account creation
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="settings-edit-mode" id="passwordEdit" style="display:none">
+                            <form id="passwordForm" action="#">
+                                {% csrf_token %}
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_current_password">Current Password</label>
+                                    <div class="settings-password-wrapper">
+                                        <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Enter current password" autocomplete="current-password" required>
+                                        <button type="button" class="settings-password-toggle" data-target-id="id_current_password"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                </div>
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_new_password">New Password</label>
+                                    <div class="settings-password-wrapper">
+                                        <input type="password" name="new_password" id="id_new_password" class="form-control" placeholder="Create a strong password" autocomplete="new-password" required>
+                                        <button type="button" class="settings-password-toggle" data-target-id="id_new_password"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                    <div class="settings-strength-meter" id="strengthMeter">
+                                        <div class="settings-strength-fill" id="strengthFill"></div>
+                                    </div>
+                                    <div class="settings-strength-label" id="strengthLabel"></div>
+                                </div>
+                                <div class="settings-field-group">
+                                    <label class="settings-field-label" for="id_confirm_password">Confirm New Password</label>
+                                    <div class="settings-password-wrapper">
+                                        <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" placeholder="Confirm new password" autocomplete="new-password" required>
+                                        <button type="button" class="settings-password-toggle" data-target-id="id_confirm_password"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                    <div class="settings-password-match" id="passwordMatch"></div>
+                                </div>
+                                <div class="settings-edit-actions">
+                                    <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                        <i class="fas fa-key"></i> Update Password
+                                    </button>
+                                    <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="password">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Security Questions -->
+                    <div class="settings-card" data-field="securityq">
+                        <div class="settings-card-header-row">
+                            <div class="settings-card-title">
+                                <i class="fas fa-shield-halved"></i>
+                                Security Questions
+                            </div>
+                            {% if security_questions %}
+                            <button type="button" class="settings-edit-btn" data-edit="securityq" title="Update questions">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                        <div class="settings-view-mode" id="securityqView">
+                            {% if security_questions %}
+                                {% for sq in security_questions %}
+                                <div class="settings-sq-block">
+                                    <div class="settings-sq-number">Question {{ forloop.counter }}</div>
+                                    <div class="settings-current-sq">
+                                        <i class="fas fa-check-circle"></i>
+                                        {{ sq.question_text }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="settings-empty-state">
+                                    <i class="fas fa-shield-halved"></i>
+                                    <p>No security questions set. These are required for password recovery.</p>
+                                    <button type="button" class="settings-btn settings-btn-outline settings-btn-sm" data-edit="securityq" style="margin-top: 0.75rem;">
+                                        <i class="fas fa-plus"></i> Set Up Questions
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="settings-edit-mode" id="securityqEdit" style="display:none">
+                            <form id="securityQuestionsForm" action="#">
+                                {% csrf_token %}
+                                {% for i in sq_range %}
+                                <div class="settings-sq-block">
+                                    <div class="settings-sq-number">Question {{ i }}</div>
+                                    <div class="settings-field-group">
+                                        <label class="settings-field-label" for="id_question_{{ i }}">Select a Question</label>
+                                        <select name="question_{{ i }}" id="id_question_{{ i }}" class="form-control" required>
+                                            <option value="">Select a security question&hellip;</option>
+                                            {% for key, text in all_security_questions %}
+                                            <option value="{{ key }}">{{ text }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="settings-field-group">
+                                        <label class="settings-field-label" for="id_answer_{{ i }}">Your Answer</label>
+                                        <input type="text" name="answer_{{ i }}" id="id_answer_{{ i }}" class="form-control" placeholder="Your answer" autocomplete="off" required minlength="2" maxlength="100">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <div class="settings-edit-actions">
+                                    <button type="submit" class="settings-btn settings-btn-primary settings-btn-sm">
+                                        <i class="fas fa-check"></i> Save Questions
+                                    </button>
+                                    <button type="button" class="settings-btn settings-btn-ghost settings-btn-sm settings-cancel-btn" data-cancel="securityq">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── SUBSCRIPTION PANEL ─── -->
+                <div class="settings-panel" id="panel-subscription" role="tabpanel">
+                    <div class="settings-section-header">
+                        <h2>Subscription</h2>
+                        <p>Your current plan and usage limits</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-plan-card">
+                            <div class="settings-plan-badge badge-{{ usage.plan_badge_color }}">
+                                <i class="fas fa-star"></i> Current Plan
+                            </div>
+                            <div class="settings-plan-name">{{ usage.plan_name }} Plan</div>
+                            <div class="settings-plan-desc">{{ usage.plan_description|default:"Your active subscription plan." }}</div>
+
+                            <!-- ── Limits grid ── -->
+                            <div class="settings-limits-grid">
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-elections"><i class="fas fa-check-to-slot"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.elections_limit }}</span>
+                                        <span class="settings-limit-label">Elections</span>
+                                    </div>
+                                </div>
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-active"><i class="fas fa-bolt"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.active_elections_limit }}</span>
+                                        <span class="settings-limit-label">Active Elections</span>
+                                    </div>
+                                </div>
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-posts"><i class="fas fa-layer-group"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.max_posts }}</span>
+                                        <span class="settings-limit-label">Positions / Election</span>
+                                    </div>
+                                </div>
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-candidates"><i class="fas fa-users"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.max_candidates }}</span>
+                                        <span class="settings-limit-label">Candidates / Position</span>
+                                    </div>
+                                </div>
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-voters"><i class="fas fa-people-group"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.max_voters|floatformat:0 }}</span>
+                                        <span class="settings-limit-label">Voters / Election</span>
+                                    </div>
+                                </div>
+                                <div class="settings-limit-item">
+                                    <div class="settings-limit-icon icon-import"><i class="fas fa-file-import"></i></div>
+                                    <div class="settings-limit-text">
+                                        <span class="settings-limit-value">{{ usage.max_import }}</span>
+                                        <span class="settings-limit-label">Import Batch Size</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── Feature flags ── -->
+                            <div class="settings-features-row">
+                                <span class="settings-feature {% if usage.features.pdf_export %}feature-on{% else %}feature-off{% endif %}">
+                                    <i class="fas fa-{% if usage.features.pdf_export %}check{% else %}xmark{% endif %}"></i> PDF Export
+                                </span>
+                                <span class="settings-feature {% if usage.features.offline_credentials %}feature-on{% else %}feature-off{% endif %}">
+                                    <i class="fas fa-{% if usage.features.offline_credentials %}check{% else %}xmark{% endif %}"></i> Offline Credentials
+                                </span>
+                                <span class="settings-feature {% if usage.features.blockchain_audit %}feature-on{% else %}feature-off{% endif %}">
+                                    <i class="fas fa-{% if usage.features.blockchain_audit %}check{% else %}xmark{% endif %}"></i> Blockchain Audit
+                                </span>
+                                <span class="settings-feature {% if usage.features.custom_branding %}feature-on{% else %}feature-off{% endif %}">
+                                    <i class="fas fa-{% if usage.features.custom_branding %}check{% else %}xmark{% endif %}"></i> Custom Branding
+                                </span>
+                                <span class="settings-feature {% if usage.features.priority_email %}feature-on{% else %}feature-off{% endif %}">
+                                    <i class="fas fa-{% if usage.features.priority_email %}check{% else %}xmark{% endif %}"></i> Priority Email
+                                </span>
+                            </div>
+
+                            {% if usage.expires_at %}
+                            <div class="settings-plan-expiry">
+                                <i class="fas fa-calendar"></i>
+                                Renews: {{ usage.expires_at|date:"F j, Y" }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- ── Usage bars ── -->
+                        <div class="settings-usage" data-used="{{ usage.elections_used }}" data-max="{{ usage.elections_limit }}">
+                            <div class="settings-usage-header">
+                                <span class="settings-usage-label">Elections Used</span>
+                                <span class="settings-usage-count">{{ usage.elections_used }} / {{ usage.elections_limit }}</span>
+                            </div>
+                            <div class="settings-usage-bar">
+                                <div class="settings-usage-fill" id="usageFill"></div>
+                            </div>
+                        </div>
+                        <div class="settings-usage" data-used="{{ usage.active_elections }}" data-max="{{ usage.active_elections_limit }}">
+                            <div class="settings-usage-header">
+                                <span class="settings-usage-label">Active Elections</span>
+                                <span class="settings-usage-count">{{ usage.active_elections }} / {{ usage.active_elections_limit }}</span>
+                            </div>
+                            <div class="settings-usage-bar">
+                                <div class="settings-usage-fill" id="activeUsageFill"></div>
+                            </div>
+                        </div>
+
+                        {% if usage.plan_name != 'Enterprise' %}
+                        <!-- ── Upgrade prompt ── -->
+                        <div class="settings-upgrade-prompt">
+                            <div class="settings-upgrade-text">
+                                <i class="fas fa-arrow-up-right-dots"></i>
+                                <span>Need more capacity? Upgrade your plan for higher limits and additional features.</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ─── DANGER PANEL ─── -->
+                <div class="settings-panel" id="panel-danger" role="tabpanel">
+                    <div class="settings-section-header">
+                        <h2>Delete Account</h2>
+                        <p>Permanently remove your account and all data</p>
+                    </div>
+
+                    <div class="settings-card settings-card-danger">
+                        <div class="settings-danger-row">
+                            <div class="settings-danger-content">
+                                <div class="settings-card-title">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                    Danger Zone
+                                </div>
+                                <div class="settings-danger-warning">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>This action is <strong>permanent and irreversible</strong>. All of your elections, candidates, voter data, and results will be permanently deleted. This cannot be undone.</p>
+                                </div>
+                            </div>
+                            <button type="button" class="settings-btn settings-btn-danger settings-btn-delete" id="deleteAccountBtn">
+                                <i class="fas fa-trash-can"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="settings-modal-overlay" id="settingsModal">
+    <div class="settings-modal" id="settingsModalBox">
+        <button type="button" class="settings-modal-close" id="settingsModalClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="settings-modal-content" id="settingsModalContent"></div>
+    </div>
+</div>
+
+<!-- Settings Data -->
+<script type="application/json" id="settingsData">
+{
+    "username": "{{ user.username|escapejs }}",
+    "csrfToken": "{{ csrf_token }}"
+}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/accounts/settings.js' %}"></script>
+{% endblock %}

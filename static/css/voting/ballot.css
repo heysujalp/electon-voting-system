@@ -1,0 +1,185 @@
+/* ===============================================
+   ElectON V2 — Vote Ballot Page
+   =============================================== */
+
+.vote-wrapper { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+/* Header */
+.vote-header { text-align: center; margin-bottom: 2.5rem; }
+.vote-header h2 { font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem; }
+.vote-header .voter-greeting { color: var(--text-secondary); font-size: 1rem; }
+.vote-header .admin-msg {
+    background: rgba(0, 122, 255, 0.08);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    color: var(--text-primary);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Preview Banner */
+.preview-banner {
+    background: rgba(255, 149, 0, 0.1);
+    border: 1px solid rgba(255, 149, 0, 0.2);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    text-align: center;
+    color: var(--apple-orange);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+/* Post Section */
+.post-section {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.post-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.25rem 2rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.post-body { padding: 1.5rem 2rem; }
+.post-body .hint { color: var(--text-tertiary); font-size: 0.875rem; margin-bottom: 1rem; }
+
+/* Candidate Options */
+.candidate-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--glass-border);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.candidate-option:hover {
+    border-color: rgba(102, 126, 234, 0.4);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.candidate-option.selected {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.08);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.candidate-option input[type="radio"] { display: none; }
+
+/* Custom Radio Circle */
+.candidate-radio {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s;
+}
+
+.candidate-option.selected .candidate-radio {
+    border-color: #667eea;
+    background: #667eea;
+}
+
+.candidate-option.selected .candidate-radio::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* Candidate Avatar */
+.candidate-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--glass-border);
+    flex-shrink: 0;
+}
+
+.candidate-avatar-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 1.25rem;
+}
+
+/* Candidate Info */
+.candidate-info strong { color: var(--text-primary); display: block; }
+.candidate-info small { color: var(--text-secondary); }
+
+/* Abstain Option */
+.abstain-option {
+    border-style: dashed;
+    opacity: 0.75;
+    transition: all 0.25s ease;
+}
+.abstain-option:hover { opacity: 1; }
+.abstain-option.selected {
+    opacity: 1;
+    border-color: var(--apple-orange, #ff9500);
+    background: rgba(255, 149, 0, 0.06);
+    box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.15);
+}
+.abstain-option.selected .candidate-radio {
+    border-color: var(--apple-orange, #ff9500);
+    background: var(--apple-orange, #ff9500);
+}
+
+.abstain-icon-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: rgba(255, 149, 0, 0.08);
+    border: 2px dashed rgba(255, 149, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--apple-orange, #ff9500);
+    font-size: 1.25rem;
+}
+.abstain-option.selected .abstain-icon-placeholder {
+    background: rgba(255, 149, 0, 0.12);
+    border-color: rgba(255, 149, 0, 0.5);
+}
+
+/* Actions */
+.vote-actions { text-align: center; margin-top: 2rem; }
+
+/* Error Message */
+.vote-error {
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    color: var(--apple-red);
+    margin-bottom: 1rem;
+    display: none;
+}

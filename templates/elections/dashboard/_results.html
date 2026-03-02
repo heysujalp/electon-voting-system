@@ -1,0 +1,328 @@
+{% load static %}
+<!-- Results Tab — Charts, winner cards, candidate tables, turnout gauge, timeline, blockchain -->
+<div class="ed-panel" id="panel-results" role="tabpanel" aria-labelledby="tab-results">
+    <div class="ed-section">
+        <div class="ed-section-header">
+            <div class="ed-section-icon" style="--sec-bg: rgba(52,199,89,.1); --sec-clr: var(--apple-green);">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div>
+                <h3 class="ed-section-title">Election Results</h3>
+                <p class="ed-section-desc">Visual overview of election outcomes.</p>
+            </div>
+        </div>
+
+        {% if election.is_draft %}
+        <div class="ed-empty">
+            <i class="fas fa-hourglass-start"></i>
+            <p>Results will be available once the election is launched and votes are cast.</p>
+        </div>
+        {% else %}
+
+        <!-- ─── Actions row ─── -->
+        <div class="ed-results-actions">
+            <a href="{% url 'results:results_pdf' election_uuid=election.election_uuid %}" class="ed-download-btn">
+                <i class="fas fa-file-pdf"></i> Export Visual Report
+            </a>
+            <a href="{% url 'results:audit_trail_pdf' election_uuid=election.election_uuid %}" class="ed-download-btn">
+                <i class="fas fa-shield-alt"></i> Audit Trail
+            </a>
+            {% if election.current_status == 'Concluded' %}
+            <a href="{% url 'results:export_results_csv' election_uuid=election.election_uuid %}" class="ed-download-btn">
+                <i class="fas fa-file-csv"></i> Export CSV
+            </a>
+            <a href="{% url 'results:export_results_excel' election_uuid=election.election_uuid %}" class="ed-download-btn">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- ─── Summary Stats Row ─── -->
+        <div class="ed-results-summary">
+            <div class="ed-results-stat-card">
+                <span class="ed-results-stat-value" id="rsTurnout">{{ turnout_pct }}%</span>
+                <span class="ed-results-stat-label">Turnout</span>
+            </div>
+            <div class="ed-results-stat-card">
+                <span class="ed-results-stat-value" id="rsVotesCast">{{ total_votes }}</span>
+                <span class="ed-results-stat-label">Votes Cast</span>
+            </div>
+            <div class="ed-results-stat-card">
+                <span class="ed-results-stat-value" id="rsPositions">{{ total_posts }}</span>
+                <span class="ed-results-stat-label">Positions</span>
+            </div>
+            <div class="ed-results-stat-card ed-results-stat-card--updated">
+                <div class="ed-results-stat-top">
+                    <span class="ed-results-stat-value" id="rsLastUpdated">&mdash;</span>
+                    <button class="ed-refresh-btn" id="rsRefreshBtn" title="Refresh results">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <span class="ed-results-stat-label"><span class="ed-live-dot"></span> Last Updated</span>
+            </div>
+        </div>
+
+        <!-- ─── Winner Announcement Cards (post-conclusion only) ─── -->
+        {% if election.current_status == 'Concluded' and posts %}
+        <div class="ed-winner-section" id="edWinnerSection" style="display:none;">
+            <h4 class="ed-winner-section-header"><i class="fas fa-trophy"></i> Winners</h4>
+            <div class="ed-winner-grid">
+                {% for post in posts %}
+                <div class="ed-winner-card ed-item-animated" data-post-id="{{ post.id }}">
+                    <div class="ed-winner-confetti" aria-hidden="true"></div>
+                    <div class="ed-winner-position">{{ post.name }}</div>
+                    <div class="ed-winner-avatar" id="winnerAvatar{{ post.id }}">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="ed-winner-name" id="winnerName{{ post.id }}">&mdash;</div>
+                    <div class="ed-winner-pct" id="winnerPct{{ post.id }}">&mdash;</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ─── Per-Position Result Cards (chart + candidate table) ─── -->
+        {% if posts %}
+        <div class="ed-pos-cards">
+            {% for post in posts %}
+            <div class="ed-pos-card" data-pos-card-id="{{ post.id }}">
+                <div class="ed-pos-card-header">
+                    <h4>
+                        <i class="fas fa-users"></i> {{ post.name }}
+                        <span class="ed-chart-badge ed-chart-badge-green" id="posTotal{{ post.id }}">0 votes</span>
+                    </h4>
+                    <div class="ed-chart-view-toggle">
+                        <button class="ed-chart-toggle" data-view="donut" title="Donut chart">
+                            <i class="fas fa-chart-pie"></i>
+                        </button>
+                        <button class="ed-chart-toggle" data-view="bar" title="Bar chart">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="ed-pos-card-body">
+                    <!-- Chart (left pane) -->
+                    <div class="ed-pos-chart-wrap">
+                        <canvas id="chartPost{{ forloop.counter }}" width="230" height="230"></canvas>
+                    </div>
+                    <!-- Candidate table (right pane) -->
+                    <div class="ed-pos-table-wrap">
+                        <table class="ed-pos-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Candidate</th>
+                                    <th></th>
+                                    <th>Votes</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tbody id="posTableBody{{ post.id }}">
+                                <!-- Populated by results.js renderCandidateTables() -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- ─── Voter Turnout Gauge ─── -->
+        <div class="ed-chart-card">
+            <div class="ed-chart-card-header">
+                <h4><i class="fas fa-tachometer-alt"></i> Voter Turnout</h4>
+                <span class="ed-chart-badge
+                    {% if turnout_pct > 50 %}ed-chart-badge-green
+                    {% elif turnout_pct >= 25 %}ed-chart-badge-orange
+                    {% else %}ed-chart-badge-red{% endif %}">
+                    {{ turnout_pct }}%
+                </span>
+            </div>
+            <div class="ed-turnout-body">
+                <!-- LEFT: Doughnut gauge -->
+                <div class="ed-turnout-gauge-wrap">
+                    <canvas id="chartTurnout" width="180" height="180"></canvas>
+                    <div class="ed-turnout-gauge-center">
+                        <span class="ed-turnout-gauge-pct">{{ turnout_pct }}%</span>
+                        <span class="ed-turnout-gauge-text">participation</span>
+                    </div>
+                </div>
+
+                <!-- MIDDLE: Core voter stats -->
+                <div class="ed-turnout-col ed-turnout-col--core">
+                    <div class="ed-turnout-col-title">Overview</div>
+                    <div class="ed-turnout-stat-row">
+                        <span class="ed-turnout-stat-dot" style="background: var(--apple-green, #34c759);"></span>
+                        <span class="ed-turnout-stat-label">Voted</span>
+                        <span class="ed-turnout-stat-value">{{ total_votes }}</span>
+                        <span class="ed-turnout-stat-pct">{{ turnout_pct }}%</span>
+                    </div>
+                    <div class="ed-turnout-stat-row">
+                        <span class="ed-turnout-stat-dot" style="background: var(--apple-orange, #ff9f0a);"></span>
+                        <span class="ed-turnout-stat-label">Not Voted</span>
+                        <span class="ed-turnout-stat-value">{{ not_voted }}</span>
+                        <span class="ed-turnout-stat-pct">{{ not_voted_pct }}%</span>
+                    </div>
+                    <div class="ed-turnout-stat-row">
+                        <span class="ed-turnout-stat-dot" style="background: var(--apple-red, #ff3b30);"></span>
+                        <span class="ed-turnout-stat-label">Revoked</span>
+                        <span class="ed-turnout-stat-value">{{ voter_stats.revoked }}</span>
+                        <span class="ed-turnout-stat-pct">&mdash;</span>
+                    </div>
+                    <div class="ed-turnout-stat-row ed-turnout-stat-row--total">
+                        <span class="ed-turnout-stat-dot" style="background: var(--text-secondary);"></span>
+                        <span class="ed-turnout-stat-label">Total Voters</span>
+                        <span class="ed-turnout-stat-value">{{ total_voters }}</span>
+                        <span class="ed-turnout-stat-pct">100%</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Voter distribution -->
+                <div class="ed-turnout-col ed-turnout-col--dist">
+                    <div class="ed-turnout-col-title">Voter Distribution</div>
+                    <div class="ed-turnout-dist-group">
+                        <div class="ed-turnout-dist-header">
+                            <span class="ed-turnout-stat-dot ed-turnout-stat-dot--sm" style="background: var(--apple-blue, #007aff);"></span>
+                            <span class="ed-turnout-dist-name">Email Invited</span>
+                            <span class="ed-turnout-dist-total">{{ voter_stats.email_invited }}</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--ok"><i class="fas fa-check"></i> {{ voter_stats.email_voted }} voted</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--pending"><i class="fas fa-clock"></i> {{ voter_stats.email_not_voted }} pending</span>
+                        </div>
+                    </div>
+                    <div class="ed-turnout-dist-group">
+                        <div class="ed-turnout-dist-header">
+                            <span class="ed-turnout-stat-dot ed-turnout-stat-dot--sm" style="background: var(--apple-indigo, #5856d6);"></span>
+                            <span class="ed-turnout-dist-name">In-person Invited</span>
+                            <span class="ed-turnout-dist-total">{{ voter_stats.offline_total }}</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--ok"><i class="fas fa-check"></i> {{ voter_stats.offline_voted }} voted</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--pending"><i class="fas fa-clock"></i> {{ voter_stats.offline_not_voted }} pending</span>
+                        </div>
+                    </div>
+                    <div class="ed-turnout-dist-group">
+                        <div class="ed-turnout-dist-header">
+                            <span class="ed-turnout-stat-dot ed-turnout-stat-dot--sm" style="background: var(--apple-indigo, #5856d6);"></span>
+                            <span class="ed-turnout-dist-name">Total Voters</span>
+                            <span class="ed-turnout-dist-total">{{ total_voters }}</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--ok"><i class="fas fa-check"></i> {{ total_votes }} voted</span>
+                            |<span class="ed-turnout-dist-item ed-turnout-dist-item--pending"><i class="fas fa-clock"></i> {{ not_voted }} pending</span>
+                        </div>
+                    </div>
+                    {% if voter_stats.email_invited == 0 and voter_stats.offline_total == 0 %}
+                    <div class="ed-turnout-dist-empty">No distribution data yet</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Participation Trend Line ─── -->
+        <div class="ed-chart-card">
+            <div class="ed-chart-card-header">
+                <h4><i class="fas fa-clock"></i> Participation Trend</h4>
+            </div>
+            <div class="ed-chart-timeline-wrap">
+                <canvas id="chartTimeline" height="200"></canvas>
+                <p class="ed-chart-empty-msg" id="timelineEmpty" style="display:none;">
+                    <i class="fas fa-info-circle"></i> No votes cast yet.
+                </p>
+            </div>
+            <!-- Timeline stats -->
+            <div class="ed-timeline-stats">
+                <div class="ed-timeline-stat">
+                    <span class="ed-timeline-stat-label"><i class="fas fa-play-circle"></i> First Vote</span>
+                    <span class="ed-timeline-stat-value" id="tlFirstVote">&mdash;</span>
+                </div>
+                <div class="ed-timeline-stat">
+                    <span class="ed-timeline-stat-label"><i class="fas fa-flag-checkered"></i> Last Vote</span>
+                    <span class="ed-timeline-stat-value" id="tlLastVote">&mdash;</span>
+                </div>
+                <div class="ed-timeline-stat">
+                    <span class="ed-timeline-stat-label"><i class="fas fa-fire"></i> Peak Hour</span>
+                    <span class="ed-timeline-stat-value" id="tlPeakHour">&mdash;</span>
+                    <span class="ed-timeline-stat-sub" id="tlPeakCount">&mdash;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Blockchain Verification Panel ─── -->
+        {% if election.blockchain_contract_address %}
+        <div class="ed-chart-card ed-bc-results-card">
+            <div class="ed-bc-results-bar"></div>
+            <div class="ed-chart-card-header ed-bc-header">
+                <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+                <div class="ed-bc-header-actions">
+                    {% if election.blockchain_deploy_tx %}
+                    <a href="{{ SOLANA_EXPLORER_URL }}/tx/{{ election.blockchain_deploy_tx }}?{{ SOLANA_CLUSTER_PARAM }}" class="ed-bc-header-link" target="_blank" rel="noopener" title="View on Solana Explorer">
+                        <i class="fas fa-external-link-alt"></i> Explorer
+                    </a>
+                    {% endif %}
+                    {% if election.current_status == 'Concluded' or election.current_status == 'Live' %}
+                    <button class="ed-bc-header-link ed-bc-header-link--verify" id="bcIntegrityBtn" title="Compare on-chain vs database">
+                        <i class="fas fa-balance-scale"></i> Verify
+                    </button>
+                    {% endif %}
+                    {% if election.config_hash %}
+                    <span class="ed-bc-badge-ok">
+                        <i class="fas fa-check-circle"></i> Verified
+                    </span>
+                    {% else %}
+                    <span class="ed-bc-badge-pending">
+                        <i class="fas fa-clock"></i> Pending
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="ed-bc-results-body">
+                <div class="ed-bc-grid">
+                    <div class="ed-bc-cell">
+                        <span class="ed-bc-cell-label">Network</span>
+                        <span class="ed-bc-cell-value">
+                            <svg class="ed-bc-sol-icon" width="16" height="16" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg"><linearGradient id="solGrad1" x1="360.88" y1="351.46" x2="141.21" y2="-69.29" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 -22)"><stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/></linearGradient><linearGradient id="solGrad2" x1="264.83" y1="401.6" x2="45.16" y2="-19.15" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 -22)"><stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/></linearGradient><linearGradient id="solGrad3" x1="312.55" y1="376.69" x2="92.88" y2="-44.06" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 -22)"><stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/></linearGradient><path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1z" fill="url(#solGrad1)"/><path d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1z" fill="url(#solGrad2)"/><path d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1z" fill="url(#solGrad3)"/></svg>
+                            Solana {{ SOLANA_NETWORK|default:"Devnet"|title }}
+                        </span>
+                    </div>
+                    {% if election.blockchain_contract_address %}
+                    <div class="ed-bc-cell">
+                        <span class="ed-bc-cell-label">Program Account</span>
+                        <div class="ed-bc-value-row">
+                            <span class="ed-bc-cell-value ed-bc-mono" id="bcContractAddr">{{ election.blockchain_contract_address }}</span>
+                            <button class="ed-bc-copy-btn" data-copy-target="bcContractAddr" title="Copy address">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if election.blockchain_deploy_tx %}
+                    <div class="ed-bc-cell">
+                        <span class="ed-bc-cell-label">Deploy Transaction</span>
+                        <div class="ed-bc-value-row">
+                            <span class="ed-bc-cell-value ed-bc-mono" id="bcDeployTx">{{ election.blockchain_deploy_tx }}</span>
+                            <button class="ed-bc-copy-btn" data-copy-target="bcDeployTx" title="Copy TX hash">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if election.config_hash %}
+                    <div class="ed-bc-cell">
+                        <span class="ed-bc-cell-label">Config Hash</span>
+                        <div class="ed-bc-value-row">
+                            <span class="ed-bc-cell-value ed-bc-mono" id="bcConfigHash">{{ election.config_hash }}</span>
+                            <button class="ed-bc-copy-btn" data-copy-target="bcConfigHash" title="Copy hash">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Integrity Check Result -->
+                <div class="ed-bc-integrity-result" id="bcIntegrityResult" style="display:none;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endif %}
+    </div>
+</div>

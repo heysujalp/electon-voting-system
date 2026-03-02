@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+{% load voting_extras %}
+
+{% block title %}Election Results{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/voting/results.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="results-wrapper py-4">
+    {% if election_not_found %}
+        <div class="results-status-card">
+            <div class="status-icon-circle gradient-red">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>Election Not Found</h3>
+            <p>The requested election could not be found.</p>
+            <a href="{% url 'public_home' %}" class="btn btn-apple-blue btn-sm mt-2"><i class="fas fa-home me-1"></i>Go Home</a>
+        </div>
+    {% elif access_denied %}
+        <div class="results-status-card">
+            <div class="status-icon-circle gradient-amber">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Results Not Available</h3>
+            <p>The election administrator has not enabled results viewing for voters.</p>
+        </div>
+    {% elif election_not_started %}
+        <div class="results-status-card">
+            <div class="status-icon-circle gradient-blue">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3>Election Not Started</h3>
+            <p>Voting for <strong>{{ election.name }}</strong> has not started yet. Results will be available once the election begins and votes are cast.</p>
+        </div>
+    {% else %}
+        <!-- ─── Header ─── -->
+        <div class="results-header">
+            <h2>{{ election.name }}</h2>
+            {% if is_active %}
+            <p class="results-subtitle"><span class="vr-live-dot"></span> Live Results</p>
+            {% else %}
+            <p class="results-subtitle">Final Election Results</p>
+            {% endif %}
+        </div>
+
+        <!-- ─── Active Election Banner ─── -->
+        {% if is_active %}
+        <div class="vr-active-banner">
+            <i class="fas fa-broadcast-tower"></i>
+            <div>
+                <strong>Election is currently active</strong>
+                <span>These results are live and not final. Final results will be available after the election concludes.</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ─── Blockchain Confirmation ─── -->
+        {% if voter_hash %}
+        <div class="vr-blockchain-card">
+            <div class="vr-bc-icon">
+                <i class="fas fa-link"></i>
+            </div>
+            <div class="vr-bc-content">
+                <h4><i class="fas fa-check-circle"></i> Vote Recorded on Blockchain</h4>
+                <p>Your vote has been securely recorded. Voter hash: <code>{{ voter_hash }}</code></p>
+                {% if voter_tx %}
+                <div class="vr-bc-tx">
+                    <span class="vr-bc-tx-label">Transaction:</span>
+                    <code class="vr-bc-tx-hash">{{ voter_tx }}</code>
+                    {% if SOLANA_EXPLORER_URL %}
+                    <a href="{{ SOLANA_EXPLORER_URL }}/tx/{{ voter_tx }}?{{ SOLANA_CLUSTER_PARAM }}" class="vr-bc-explorer-link" target="_blank" rel="noopener">
+                        <i class="fas fa-external-link-alt"></i> View on Explorer
+                    </a>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="vr-bc-pending"><i class="fas fa-spinner fa-spin"></i> Blockchain confirmation pending...</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ─── Summary Stats Row ─── -->
+        <div class="vr-stats-row">
+            <div class="vr-stat-card">
+                <span class="vr-stat-value">{{ turnout_pct }}%</span>
+                <span class="vr-stat-label">Turnout</span>
+            </div>
+            <div class="vr-stat-card">
+                <span class="vr-stat-value">{{ total_votes }}</span>
+                <span class="vr-stat-label">Votes Cast</span>
+            </div>
+            <div class="vr-stat-card">
+                <span class="vr-stat-value">{{ total_posts }}</span>
+                <span class="vr-stat-label">Positions</span>
+            </div>
+            <div class="vr-stat-card">
+                <span class="vr-stat-value" id="vrLastUpdated">Now</span>
+                <span class="vr-stat-label">{% if is_active %}<span class="vr-live-dot"></span> {% endif %}Last Updated</span>
+            </div>
+        </div>
+
+        <!-- ─── Per-Position Result Cards ─── -->
+        {% for post in posts %}
+        <div class="results-post-card">
+            <div class="results-post-header">
+                <i class="fas fa-poll me-2"></i>{{ post.name }}
+                {% with post_data=results|dictkey:post.pk %}
+                {% if post_data %}
+                <span class="vr-post-total-badge">{{ post_data.total_votes }} vote{{ post_data.total_votes|pluralize }}</span>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="results-post-body">
+                {% with post_data=results|dictkey:post.pk %}
+                {% if post_data %}
+                    {% for cv in post_data.candidates %}
+                    <div class="result-row {% if forloop.first and cv.votes > 0 %}result-row--leader{% endif %}">
+                        <span class="result-rank">{{ forloop.counter }}</span>
+                        <span class="result-name">
+                            {{ cv.candidate.name }}
+                            {% if forloop.first and cv.votes > 0 and not is_active %}
+                            <span class="vr-winner-badge"><i class="fas fa-trophy"></i> Winner</span>
+                            {% endif %}
+                        </span>
+                        <div class="result-bar-bg">
+                            <div class="result-bar" style="width: {{ cv.percentage }}%;"></div>
+                        </div>
+                        <span class="result-votes">{{ cv.votes }}</span>
+                        <span class="result-pct">{{ cv.percentage }}%</span>
+                    </div>
+                    {% endfor %}
+                    <div class="result-total">
+                        <span>Total Votes</span>
+                        <span>{{ post_data.total_votes }}</span>
+                    </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- ─── Blockchain Verification Panel ─── -->
+        {% if election.blockchain_contract_address %}
+        <div class="vr-bc-panel">
+            <div class="vr-bc-panel-header">
+                <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+                {% if election.config_hash %}
+                <span class="vr-bc-badge-ok"><i class="fas fa-check-circle"></i> Verified</span>
+                {% else %}
+                <span class="vr-bc-badge-pending"><i class="fas fa-clock"></i> Pending</span>
+                {% endif %}
+            </div>
+            <div class="vr-bc-panel-body">
+                <div class="vr-bc-field">
+                    <span class="vr-bc-field-label">Network</span>
+                    <span class="vr-bc-field-value">Solana {{ SOLANA_NETWORK|default:"Devnet"|title }}</span>
+                </div>
+                <div class="vr-bc-field">
+                    <span class="vr-bc-field-label">Program Account</span>
+                    <span class="vr-bc-field-value"><code>{{ election.blockchain_contract_address|truncatechars:24 }}</code></span>
+                </div>
+                {% if election.blockchain_deploy_tx %}
+                <div class="vr-bc-field">
+                    <span class="vr-bc-field-label">Deploy Transaction</span>
+                    <span class="vr-bc-field-value">
+                        <code>{{ election.blockchain_deploy_tx|truncatechars:24 }}</code>
+                        {% if SOLANA_EXPLORER_URL %}
+                        <a href="{{ SOLANA_EXPLORER_URL }}/tx/{{ election.blockchain_deploy_tx }}?{{ SOLANA_CLUSTER_PARAM }}" class="vr-bc-explorer-link" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if is_active and election %}
+<script>
+/* Auto-refresh voter results every 30 seconds during active elections */
+(function() {
+    var refreshInterval = 30000;
+    var lastUpdate = new Date();
+
+    function updateTimer() {
+        var el = document.getElementById('vrLastUpdated');
+        if (!el) return;
+        var s = Math.round((Date.now() - lastUpdate.getTime()) / 1000);
+        if (s < 10) el.textContent = 'Just now';
+        else if (s < 60) el.textContent = s + 's ago';
+        else el.textContent = Math.round(s / 60) + 'm ago';
+    }
+
+    setInterval(function() {
+        window.location.reload();
+    }, refreshInterval);
+
+    setInterval(updateTimer, 5000);
+})();
+</script>
+{% endif %}
+{% endblock %}

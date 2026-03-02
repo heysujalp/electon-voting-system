@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}{{ election.name }} — Dashboard{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/elections/dashboard.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6/dist/cropper.min.css">
+{% endblock %}
+
+{% block full_content %}
+<div class="ed ed--{{ election.current_status|lower }}">
+
+    <!-- Floating Orbs -->
+    <div class="ed-orbs">
+        <div class="ed-orb ed-orb-1"></div>
+        <div class="ed-orb ed-orb-2"></div>
+        <div class="ed-orb ed-orb-3"></div>
+    </div>
+
+    <div class="ed-container mt-3">
+
+        <!-- ════ SHARED HEADER (both modes) ════ -->
+        <header class="ed-header" data-status="{{ election.current_status|lower }}">
+            <!-- Top bar: supertitle (left) + countdown (right) -->
+            <div class="ed-header-top-bar">
+                <div class="ed-header-supertitle">
+                    <i class="fas fa-vote-yea"></i> ELECTION DASHBOARD
+                </div>
+                {% if election.is_launched and election.current_status != 'Concluded' %}
+                <div class="ed-header-countdown"
+                     data-start="{{ election.start_time|date:'c' }}"
+                     data-end="{{ election.end_time|date:'c' }}"
+                     data-status="{{ election.current_status|lower }}"
+                     aria-live="polite" aria-atomic="true">
+                    <span class="ed-cd-label" id="edCountdownLabel">
+                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        <span id="edCountdownLabelText">Ends in</span>
+                    </span>
+                    <div class="ed-cd-segments" id="edCountdownSegments">
+                        <div class="ed-cd-seg"><span class="ed-cd-num" id="edCdDays">00</span><span class="ed-cd-unit">d</span></div>
+                        <span class="ed-cd-sep">:</span>
+                        <div class="ed-cd-seg"><span class="ed-cd-num" id="edCdHours">00</span><span class="ed-cd-unit">h</span></div>
+                        <span class="ed-cd-sep">:</span>
+                        <div class="ed-cd-seg"><span class="ed-cd-num" id="edCdMins">00</span><span class="ed-cd-unit">m</span></div>
+                        <span class="ed-cd-sep">:</span>
+                        <div class="ed-cd-seg"><span class="ed-cd-num" id="edCdSecs">00</span><span class="ed-cd-unit">s</span></div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if election.can_edit %}
+                    <a href="{% url 'elections:edit' election_uuid=election.election_uuid %}"
+                       class="ed-header-icon-btn " title="Edit election settings" aria-label="Edit election settings">
+                        <i class="fas fa-pen" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Title row -->
+            <div class="ed-header-main">
+                <h1 class="ed-title">{{ election.name }}</h1>
+                <span class="ed-status ed-status--{{ election.current_status|lower }}">
+                    <i class="fas fa-circle"></i> {{ election.current_status }}
+                </span>
+            </div>
+
+            <!-- Meta row -->
+            <div class="ed-meta">
+                <span class="ed-meta-item ed-duration-display"
+                      data-start="{{ election.start_time|date:'c' }}"
+                      data-end="{{ election.end_time|date:'c' }}"
+                      data-status="{{ election.current_status|lower }}">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span class="ed-duration-text">{{ election.duration_display }}</span>
+                </span>
+                <span class="ed-meta-item">
+                    <i class="fas fa-calendar"></i>
+                    {% timezone election.timezone %}
+                    {{ election.start_time|date:"M d, Y H:i" }} — {{ election.end_time|date:"M d, Y H:i" }}
+                    {% endtimezone %}
+                </span>
+                <span class="ed-meta-item">
+                    <i class="fas fa-globe"></i> {{ election.timezone }}
+                </span>
+                {% if election.access_code %}
+                <span class="ed-meta-item ed-access-code" data-code="{{ election.access_code }}" title="Click to copy">
+                    <i class="fas fa-key"></i> {{ election.access_code }}
+                </span>
+                {% endif %}
+                {% if election.can_launch %}
+                <button class="ed-header-launch" data-action="launch">
+                    <i class="fas fa-rocket"></i> Launch
+                </button>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Stats Grid (shared) -->
+        <div class="ed-stats-grid">
+            <div class="ed-stat">
+                <div class="ed-stat-icon ed-stat-posts"><i class="fas fa-columns" aria-hidden="true"></i></div>
+                <div class="ed-stat-value" data-stat="posts" data-count="{{ total_posts }}">{{ total_posts }}</div>
+                <div class="ed-stat-label">Positions</div>
+            </div>
+            <div class="ed-stat">
+                <div class="ed-stat-icon ed-stat-candidates"><i class="fas fa-user-tie" aria-hidden="true"></i></div>
+                <div class="ed-stat-value" data-stat="candidates" data-count="{{ total_candidates }}">{{ total_candidates }}</div>
+                <div class="ed-stat-label">Candidates</div>
+            </div>
+            <div class="ed-stat">
+                <div class="ed-stat-icon ed-stat-voters"><i class="fas fa-users" aria-hidden="true"></i></div>
+                <div class="ed-stat-value" data-stat="voters" data-count="{{ total_voters }}">{{ total_voters }}</div>
+                <div class="ed-stat-label">Voters</div>
+            </div>
+            <div class="ed-stat">
+                <div class="ed-stat-icon ed-stat-votes"><i class="fas fa-check-double" aria-hidden="true"></i></div>
+                <div class="ed-stat-value" data-stat="votes" data-count="{{ total_votes }}">{{ total_votes }}</div>
+                <div class="ed-stat-label">Votes Cast</div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             BASIC WINDOW
+             ═══════════════════════════════════════════════════════ -->
+        <div id="edBasicWindow" class="ed-window ed-window--basic" role="tabpanel">
+
+            <!-- Tab Bar -->
+            <div class="ed-tabs" role="tablist">
+                <button class="ed-tab active" data-tab="overview" role="tab" aria-selected="true" id="tab-overview" aria-controls="panel-overview">
+                    <i class="fas fa-th-large"></i><span>Overview</span>
+                </button>
+                <button class="ed-tab" data-tab="posts" role="tab" aria-selected="false" id="tab-posts" aria-controls="panel-posts">
+                    <i class="fas fa-columns"></i><span>Positions & Candidates</span>
+                </button>
+                <button class="ed-tab" data-tab="voters" role="tab" aria-selected="false" id="tab-voters" aria-controls="panel-voters">
+                    <i class="fas fa-users"></i><span>Voters</span>
+                </button>
+                <button class="ed-tab" data-tab="results" role="tab" aria-selected="false" id="tab-results" aria-controls="panel-results">
+                    <i class="fas fa-chart-bar"></i><span>Results</span>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="ed-content">
+                {% include "elections/dashboard/_overview.html" %}
+                {% include "elections/dashboard/_posts.html" %}
+                {% include "elections/dashboard/_voters.html" %}
+                {% include "elections/dashboard/_results.html" %}
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+{% include "elections/dashboard/_modals.html" %}
+{% include "elections/dashboard/_crop_modal.html" %}
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js (loaded only on dashboard) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"
+        integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
+        crossorigin="anonymous"></script>
+<!-- Cropper.js (image crop modal) -->
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6/dist/cropper.min.js"></script>
+<!-- Config data for JS -->
+<script type="application/json" id="electionConfigJson">{
+    "uuid": "{{ election.election_uuid }}",
+    "name": "{{ election.name|escapejs }}",
+    "canEdit": {{ election.can_edit|yesno:"true,false" }},
+    "canLaunch": {{ election.can_launch|yesno:"true,false" }},
+    "isDraft": {{ election.is_draft|yesno:"true,false" }},
+    "allowAbstain": {{ election.allow_abstain|yesno:"true,false" }},
+    "status": "{{ election.current_status|lower }}",
+    "totalPosts": {{ total_posts }},
+    "totalCandidates": {{ total_candidates }},
+    "totalVoters": {{ total_voters }},
+    "totalVotes": {{ total_votes }},
+    "turnoutPct": {{ turnout_pct }}
+}</script>
+<script>
+    (function() {
+        var d = JSON.parse(document.getElementById('electionConfigJson').textContent);
+        window.electionUuid = d.uuid;
+        window.electionData = d;
+    })();
+</script>
+<script type="application/json" id="electionUrlData">{
+    "update-name":"{% url "elections:update_name" election_uuid=election.election_uuid %}",
+    "update-period":"{% url "elections:update_period" election_uuid=election.election_uuid %}",
+    "update-message":"{% url "elections:update_message" election_uuid=election.election_uuid %}",
+    "update-abstain":"{% url "elections:update_abstain" election_uuid=election.election_uuid %}",
+    "launch":"{% url "elections:launch" election_uuid=election.election_uuid %}",
+    "delete":"{% url "elections:delete" election_uuid=election.election_uuid %}",
+    "duplicate":"{% url "elections:duplicate" election_uuid=election.election_uuid %}",
+    "add-post":"{% url "elections:add_post" election_uuid=election.election_uuid %}",
+    "add-posts-bulk":"{% url "elections:add_posts_bulk" election_uuid=election.election_uuid %}",
+    "delete-post-base":"{% url "elections:delete_post" election_uuid=election.election_uuid post_id=0 %}",
+    "rename-post-base":"{% url "elections:rename_post" election_uuid=election.election_uuid post_id=0 %}",
+    "import-voters":"{% url "candidates:import_voters" election_uuid=election.election_uuid %}",
+    "parse-voter-file":"{% url "candidates:parse_voter_file" election_uuid=election.election_uuid %}",
+    "send-invitations":"{% url "notifications:send_invitations" election_uuid=election.election_uuid %}",
+    "check-duplicates":"{% url "notifications:check_duplicates" election_uuid=election.election_uuid %}",
+    "resolve-and-send":"{% url "notifications:resolve_and_send" election_uuid=election.election_uuid %}",
+    "charts":"{% url "results:election_charts" election_uuid=election.election_uuid %}",
+    "real-time":"{% url "results:real_time_data" election_uuid=election.election_uuid %}",
+    "integrity":"{% url "blockchain:integrity_check" election_uuid=election.election_uuid %}",
+    "generate-offline-creds":"{% url "candidates:generate_offline_creds" election_uuid=election.election_uuid %}",
+    "revoke-all-voters":"{% url "candidates:revoke_all_voters" election_uuid=election.election_uuid %}",
+    "resend-all-invitations":"{% url "candidates:resend_all_invitations" election_uuid=election.election_uuid %}",
+    "revoke-batch-base":"{% url "candidates:revoke_batch" election_uuid=election.election_uuid batch="__BATCH__" %}",
+    "revoke-all-batches":"{% url "candidates:revoke_all_batches" election_uuid=election.election_uuid %}",
+    "export-voters-csv":"{% url "candidates:export_voters_csv" election_uuid=election.election_uuid %}",
+    "export-voters-excel":"{% url "candidates:export_voters_excel" election_uuid=election.election_uuid %}",
+    "export-voters-pdf":"{% url "candidates:export_voters_pdf" election_uuid=election.election_uuid %}",
+    "bulk-import":"{% url "elections:bulk_import" election_uuid=election.election_uuid %}",
+    "reorder-posts":"{% url "elections:reorder_posts" election_uuid=election.election_uuid %}",
+    "delete-all-posts":"{% url "elections:delete_all_posts" election_uuid=election.election_uuid %}",
+    "export-positions-pdf":"{% url "elections:export_positions_pdf" election_uuid=election.election_uuid %}",
+    "post-candidates-base":"{% url "elections:post_candidates" election_uuid=election.election_uuid post_id=0 %}",
+    "add-candidates-bulk-base":"{% url "candidates:add_candidates_bulk" election_uuid=election.election_uuid post_id=0 %}",
+    "delete-candidate-base":"{% url "candidates:delete_candidate" election_uuid=election.election_uuid candidate_id=0 %}",
+    "update-candidate-base":"{% url "candidates:update_candidate" election_uuid=election.election_uuid candidate_id=0 %}",
+    "update-candidate-image-base":"{% url "candidates:update_candidate_image" election_uuid=election.election_uuid candidate_id=0 %}",
+    "presign-upload-base":"{% url "candidates:presign_candidate_upload" election_uuid=election.election_uuid candidate_id=0 %}",
+    "confirm-upload-base":"{% url "candidates:confirm_candidate_upload" election_uuid=election.election_uuid candidate_id=0 %}",
+    "reorder-candidates-base":"{% url "candidates:reorder_candidates" election_uuid=election.election_uuid post_id=0 %}",
+    "import-candidates":"{% url "candidates:import_candidates" election_uuid=election.election_uuid %}",
+    "candidate-template-csv":"{% url "candidates:download_candidate_template" election_uuid=election.election_uuid fmt="csv" %}",
+    "candidate-template-excel":"{% url "candidates:download_candidate_template" election_uuid=election.election_uuid fmt="excel" %}",
+    "export-data":"{% url "elections:export_data" election_uuid=election.election_uuid %}",
+    "export-template-positions":"{% url "elections:export_template" election_uuid=election.election_uuid template_type="positions" %}",
+    "export-template-voters":"{% url "elections:export_template" election_uuid=election.election_uuid template_type="voters" %}",
+    "dashboard-stats":"{% url "elections:election_stats" election_uuid=election.election_uuid %}",
+    "election-stream":"{% url "elections:election_stream" election_uuid=election.election_uuid %}",
+    "failed-invitations":"{{ failed_invitations_url }}"
+}</script>
+<script type="module" src="{% static 'js/elections/dashboard.js' %}"></script>
+{% endblock %}

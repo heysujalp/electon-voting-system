@@ -1,0 +1,81 @@
+<!-- Duplicate Voter Resolution Modal -->
+<div class="ed-dup-overlay" id="dupModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dupModalTitle">
+    <div class="ed-dup-card">
+        <div class="ed-dup-header">
+            <h2 class="ed-dup-title" id="dupModalTitle">
+                <i class="fas fa-exclamation-triangle"></i> Duplicate Voters Detected
+            </h2>
+            <button class="ed-dup-close" id="dupModalClose" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="ed-dup-body" id="dupModalBody">
+            <!-- Populated dynamically by JS -->
+        </div>
+        <div class="ed-dup-footer">
+            <button class="ed-btn-secondary" id="dupCancelBtn">Cancel</button>
+            <button class="ed-btn-primary" id="dupConfirmBtn">
+                <i class="fas fa-paper-plane"></i> Confirm &amp; Send
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Password Confirmation Modal for Delete -->
+<!-- BUG-09: added role, aria-modal, aria-labelledby, aria-hidden for accessibility -->
+<div class="ed-pw-overlay" id="edPasswordModal"
+     role="dialog" aria-modal="true" aria-labelledby="edPwModalTitle" aria-hidden="true">
+    <div class="ed-pw-card">
+        <div class="ed-pw-header">
+            <div class="ed-pw-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="ed-pw-title" id="edPwModalTitle">Confirm Deletion</h3>
+            <p class="ed-pw-subtitle">Enter your password to permanently delete this election.</p>
+        </div>
+        <form id="edPasswordForm" action="#" autocomplete="off">
+            <div class="ed-pw-field">
+                <label class="ed-label">Password</label>
+                <div class="ed-pw-input-wrap">
+                    <input type="password" id="edPwInput" class="ed-input" placeholder="Enter your password" required autocomplete="current-password">
+                    <button type="button" class="ed-pw-toggle" id="edPwToggle"><i class="fas fa-eye"></i></button>
+                </div>
+                <div class="ed-field-err" id="edPwError"></div>
+            </div>
+            <div class="ed-pw-actions">
+                <button type="submit" class="ed-btn-danger ed-btn-sm">
+                    <i class="fas fa-trash-alt"></i> Delete Election
+                </button>
+                <button type="button" class="ed-btn-ghost ed-btn-sm" id="edPwCancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- PDF Password Reveal Modal -->
+<div class="ed-pdfpw-overlay" id="pdfPasswordModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pdfPwModalTitle">
+    <div class="ed-pdfpw-card">
+        <div class="ed-pdfpw-header">
+            <div class="ed-pdfpw-icon"><i class="fas fa-key"></i></div>
+            <h3 class="ed-pdfpw-title" id="pdfPwModalTitle">Your PDF Password</h3>
+            <p class="ed-pdfpw-subtitle">
+                <i class="fas fa-exclamation-triangle"></i>
+                This password is shown <strong>only once</strong>. Copy and store it safely before this dialog closes.
+            </p>
+        </div>
+        <div class="ed-pdfpw-body">
+            <div class="ed-pdfpw-pw-wrap">
+                <code class="ed-pdfpw-display" id="pdfPwDisplay"></code>
+                <button class="ed-pdfpw-copy-btn" id="pdfPwCopyBtn" type="button">
+                    <i class="fas fa-copy"></i> Copy Password
+                </button>
+            </div>
+        </div>
+        <div class="ed-pdfpw-footer">
+            <span class="ed-pdfpw-timer">
+                Auto-closes in <span id="pdfPwCountdown" class="ed-pdfpw-seconds">60s</span>
+            </span>
+            <button class="ed-pdfpw-done-btn" id="pdfPwDoneBtn" type="button">
+                <i class="fas fa-check"></i> Done — I've copied it
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Admin Verification{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-purple">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-centered-card">
+        <div class="auth-icon themed">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2>Two-Factor Verification</h2>
+        <p>A verification code has been sent to your email. Enter it below to continue.</p>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="auth-error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'accounts:admin_login_verification' %}" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="auth-form-group auth-code-input">
+                {{ field }}
+                {% if field.errors %}
+                <div class="auth-field-error centered">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% for error in field.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-auth-primary">
+                <i class="fas fa-check me-2"></i>Verify
+            </button>
+        </form>
+
+        <div class="auth-links">
+            <a href="{% url 'accounts:login' %}"><i class="fas fa-arrow-left me-1"></i>Back to login</a>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

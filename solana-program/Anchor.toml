@@ -1,0 +1,21 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+electon_voting = "HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w"
+
+[programs.devnet]
+electon_voting = "HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "anchor test --skip-local-validator"

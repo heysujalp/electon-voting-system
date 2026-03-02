@@ -1,0 +1,264 @@
+/* ===============================================
+   ElectON V2 — Voter Election Results
+   =============================================== */
+
+.results-wrapper { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+/* Header */
+.results-header { text-align: center; margin-bottom: 2.5rem; }
+.results-header h2 { font-weight: 800; color: var(--text-primary); }
+.results-header .results-subtitle { color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+
+/* Live dot */
+.vr-live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--apple-green, #34c759);
+    animation: vrPulse 1.5s ease-in-out infinite;
+}
+@keyframes vrPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* ─── Active Election Banner ─── */
+.vr-active-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    background: rgba(255, 159, 10, 0.08);
+    border: 1px solid rgba(255, 159, 10, 0.25);
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+.vr-active-banner > i { font-size: 1.5rem; color: var(--apple-orange, #ff9f0a); margin-top: 2px; }
+.vr-active-banner strong { display: block; font-weight: 700; margin-bottom: 0.25rem; }
+.vr-active-banner span { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* ─── Blockchain Confirmation Card ─── */
+.vr-blockchain-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    background: rgba(52, 199, 89, 0.06);
+    border: 1px solid rgba(52, 199, 89, 0.2);
+    margin-bottom: 2rem;
+}
+.vr-bc-icon { font-size: 1.5rem; color: var(--apple-green, #34c759); margin-top: 2px; }
+.vr-bc-content { flex: 1; }
+.vr-bc-content h4 { font-weight: 700; font-size: 1rem; margin: 0 0 0.5rem; color: var(--text-primary); }
+.vr-bc-content h4 i { color: var(--apple-green, #34c759); margin-right: 0.25rem; }
+.vr-bc-content p { margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+.vr-bc-content code { font-size: 0.8rem; background: var(--glass-bg); padding: 2px 6px; border-radius: 6px; word-break: break-all; }
+.vr-bc-tx { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.vr-bc-tx-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.vr-bc-tx-hash { font-size: 0.75rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vr-bc-explorer-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--apple-blue, #007aff);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.25rem;
+}
+.vr-bc-explorer-link:hover { text-decoration: underline; }
+.vr-bc-pending { color: var(--text-tertiary, var(--text-secondary)); font-style: italic; }
+.vr-bc-pending i { margin-right: 0.25rem; }
+
+/* ─── Stats Row ─── */
+.vr-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.vr-stat-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+}
+.vr-stat-value { display: block; font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+.vr-stat-label { display: flex; align-items: center; justify-content: center; gap: 0.25rem; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+@media (max-width: 600px) {
+    .vr-stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ─── Post Card Enhancements ─── */
+.results-post-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.results-post-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.25rem 2rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.vr-post-total-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.results-post-body { padding: 1.5rem 2rem; }
+
+/* Result Row */
+.result-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+.result-row:last-child { border-bottom: none; }
+.result-row--leader { background: rgba(52, 199, 89, 0.04); margin: 0 -0.5rem; padding-left: 0.5rem; padding-right: 0.5rem; border-radius: 12px; }
+
+.result-rank {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-size: 0.8rem; font-weight: 700;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.result-name { flex: 1; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+.result-votes { font-weight: 700; color: #667eea; min-width: 50px; text-align: right; }
+
+.vr-winner-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--apple-green, #34c759);
+    background: rgba(52, 199, 89, 0.1);
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.result-pct {
+    min-width: 60px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Progress Bar */
+.result-bar-bg {
+    flex: 2;
+    height: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.result-bar {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Total Row */
+.result-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0 0;
+    margin-top: 0.5rem;
+    border-top: 2px solid var(--glass-border);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ─── Blockchain Verification Panel ─── */
+.vr-bc-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+.vr-bc-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+.vr-bc-panel-header h4 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+.vr-bc-panel-header h4 i { color: var(--apple-green, #34c759); margin-right: 0.5rem; }
+
+.vr-bc-badge-ok {
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--apple-green, #34c759);
+    background: rgba(52, 199, 89, 0.1);
+    padding: 0.25rem 0.75rem; border-radius: 20px;
+}
+.vr-bc-badge-pending {
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--apple-orange, #ff9f0a);
+    background: rgba(255, 159, 10, 0.1);
+    padding: 0.25rem 0.75rem; border-radius: 20px;
+}
+
+.vr-bc-panel-body { padding: 1rem 1.5rem; }
+.vr-bc-field { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--glass-border); }
+.vr-bc-field:last-child { border-bottom: none; }
+.vr-bc-field-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.vr-bc-field-value { font-size: 0.85rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+.vr-bc-field-value code { font-size: 0.8rem; background: rgba(0, 0, 0, 0.04); padding: 2px 6px; border-radius: 6px; }
+
+/* Status Card (error/in-progress states) */
+.results-status-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 500px;
+}
+
+.results-status-card h3 { font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+.results-status-card p { color: var(--text-secondary); }
+
+/* Status Icon Circle (shared pattern) */
+.status-icon-circle {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-icon-circle i { font-size: 2rem; color: white; }
+.status-icon-circle.gradient-red { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+.status-icon-circle.gradient-amber { background: linear-gradient(135deg, #fa709a, #fee140); }
+.status-icon-circle.gradient-blue { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.status-icon-circle.gradient-green { background: linear-gradient(135deg, #34C759, #30d158); }
+.status-icon-circle.gradient-purple { background: linear-gradient(135deg, #667eea, #764ba2); }

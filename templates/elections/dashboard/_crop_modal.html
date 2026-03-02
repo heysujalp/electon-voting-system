@@ -1,0 +1,19 @@
+<!-- Image Crop Modal — Cropper.js integration for candidate avatars -->
+<div id="cropModal" class="ed-crop-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="cropModalTitle">
+    <div class="ed-crop-modal-backdrop"></div>
+    <div class="ed-crop-modal-content">
+        <div class="ed-crop-modal-header">
+            <h3 id="cropModalTitle">Crop Photo</h3>
+            <button class="ed-crop-modal-close" type="button" title="Close" aria-label="Close">&times;</button>
+        </div>
+        <div class="ed-crop-modal-body">
+            <img id="cropImage" alt="Crop preview">
+        </div>
+        <div class="ed-crop-modal-footer">
+            <button id="cropCancel" class="ed-btn ed-btn--secondary" type="button">Cancel</button>
+            <button id="cropConfirm" class="ed-btn ed-btn--primary" type="button">
+                <i class="fas fa-upload"></i> Upload
+            </button>
+        </div>
+    </div>
+</div>

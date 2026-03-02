@@ -1,0 +1,105 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Request Election Access{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-green">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel — Branding -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-hand-paper"></i>
+            </div>
+            <h2>Request Access</h2>
+            <p>Enter the election access code shared by your administrator to request voting credentials.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-key"></i></div>
+                    <span>Enter the access code</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-user-check"></i></div>
+                    <span>Admin reviews &amp; approves</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-envelope"></i></div>
+                    <span>Receive your credentials</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel — Single-step Form -->
+        <div class="auth-right">
+            <!-- REQUEST FORM -->
+            <div id="stepForm">
+                <h2>Request Voting Access</h2>
+                <p class="auth-subtitle">Enter the access code and your details to request voting credentials</p>
+
+                <form id="accessRequestForm" novalidate
+                      data-url="{% url 'voting:voter_access_request' %}">
+
+                    <div class="auth-form-group">
+                        <label for="accessCode" class="visually-hidden">Access Code</label>
+                        <div class="auth-input-group">
+                            <i class="fas fa-key input-icon" aria-hidden="true"></i>
+                            <input type="text" class="form-control" id="accessCode" name="access_code"
+                                   placeholder="Election Access Code" autocomplete="off" required maxlength="8"
+                                   style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;"
+                                   aria-label="Election access code">
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label for="voterName" class="visually-hidden">Full Name</label>
+                        <div class="auth-input-group">
+                            <i class="fas fa-user input-icon" aria-hidden="true"></i>
+                            <input type="text" class="form-control" id="voterName" name="name"
+                                   placeholder="Your full name" required
+                                   aria-label="Full name">
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label for="voterEmail" class="visually-hidden">Email Address</label>
+                        <div class="auth-input-group">
+                            <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                            <input type="email" class="form-control" id="voterEmail" name="email"
+                                   placeholder="Your email address" required
+                                   aria-label="Email address">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth-primary" id="submitRequestBtn">
+                        <i class="fas fa-paper-plane me-2"></i>Request Access
+                    </button>
+                </form>
+
+                <div class="auth-links">
+                    Already have credentials? <a href="{% url 'voting:voter_login' %}"><i class="fas fa-sign-in-alt me-1"></i>Login to vote</a>
+                </div>
+            </div>
+
+            <!-- SUCCESS -->
+            <div id="stepSuccess" style="display: none;">
+                <div class="auth-success-message" style="margin-bottom: 1.5rem;">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="successMessage"></span>
+                </div>
+                <div class="auth-links">
+                    <a href="{% url 'voting:voter_login' %}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Go to Voter Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/auth/access_request.js' %}"></script>
+{% endblock %}

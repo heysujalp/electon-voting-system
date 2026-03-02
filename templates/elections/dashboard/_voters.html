@@ -1,0 +1,535 @@
+<!-- Voters Tab -->
+<div class="ed-panel" id="panel-voters" role="tabpanel" aria-labelledby="tab-voters">
+
+    <!-- HEADER + INLINE STATS -->
+    <div class="ed-voters-header">
+        <div class="ed-voters-title-block">
+            <div class="ed-section-icon" style="--sec-bg: rgba(88,86,214,.1); --sec-clr: var(--apple-purple, #5856d6);">
+                <i class="fas fa-users"></i>
+            </div>
+            <div>
+                <h3 class="ed-section-title">Voters</h3>
+                <p class="ed-section-desc">Manage invitations, credentials, and voter access</p>
+            </div>
+        </div>
+        <!-- Stats inline on the right -->
+        <div class="ed-voters-hdr-stats">
+            <div class="ed-voters-hdr-stat">
+                <span class="ed-voters-hdr-num" data-voter-stat="total">{{ voter_stats.total }}</span>
+                <span class="ed-voters-hdr-lbl">Total</span>
+            </div>
+            <div class="ed-voters-hdr-stat">
+                <span class="ed-voters-hdr-num" data-voter-stat="email_invited">{{ voter_stats.email_invited }}</span>
+                <span class="ed-voters-hdr-lbl">Email</span>
+            </div>
+            <div class="ed-voters-hdr-stat">
+                <span class="ed-voters-hdr-num" data-voter-stat="pdf_generated">{{ voter_stats.pdf_generated }}</span>
+                <span class="ed-voters-hdr-lbl">PDF</span>
+            </div>
+            <div class="ed-voters-hdr-stat">
+                <span class="ed-voters-hdr-num" data-voter-stat="voted">{{ voter_stats.voted }}</span>
+                <span class="ed-voters-hdr-lbl">Voted</span>
+            </div>
+        </div>
+    </div>
+
+    {% if election.can_edit %}
+    <!-- INVITE SECTION -->
+    <div class="ed-voters-invite-card">
+        <div class="ed-voters-invite-tabs" role="tablist">
+            <button class="ed-voters-invite-tab active" role="tab" type="button"
+                    data-panel="voterEmailPanel" data-section="emailVotersSection"
+                    aria-selected="true" id="tab-invite-email">
+                <i class="fas fa-envelope"></i>
+                <span>Invite via Email</span>
+            </button>
+            <button class="ed-voters-invite-tab" role="tab" type="button"
+                    data-panel="voterInPersonPanel" data-section="batchVotersSection"
+                    aria-selected="false" id="tab-invite-inperson">
+                <i class="fas fa-file-pdf"></i>
+                <span>Invite In-Person </span>
+            </button>
+        </div>
+
+        <!-- EMAIL INVITE PANEL -->
+        <div class="ed-voters-invite-panel" id="voterEmailPanel"
+             role="tabpanel" aria-labelledby="tab-invite-email">
+            <div class="ed-pf-header">
+                <div class="ed-section-icon" style="--sec-bg: rgba(90,200,250,.1); --sec-clr: var(--apple-teal, #5ac8fa);">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="ed-pf-header-text">
+                    <h4 class="ed-pf-title">Invite Voters by Email</h4>
+                    <p class="ed-pf-desc">Send each person a unique, secure voting invitation. Each voter receives a link valid for one vote.</p>
+                </div>
+            </div>
+            <div class="ed-pf-body">
+                <div class="ed-voter-entry-header">
+                    <span class="ed-ve-hdr-sn">#</span>
+                    <span class="ed-ve-hdr-field">Email Address</span>
+                    <span class="ed-ve-hdr-field">Name <span class="ed-ve-hdr-opt">(optional)</span></span>
+                    <span class="ed-ve-hdr-act">
+                        <button type="button" class="ed-pf-clear-all" id="voterClearRowsBtn" title="Clear all rows">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                </div>
+                <div class="ed-voter-entries" id="voterEntryBody">
+                    <div class="ed-voter-entry">
+                        <span class="ed-pf-entry-sn">1</span>
+                        <input type="email" class="ed-input ed-entry-email" placeholder="voter@example.com" autocomplete="off">
+                        <input type="text" class="ed-input ed-entry-name" placeholder="Full name" autocomplete="off">
+                        <button type="button" class="ed-pf-entry-remove ed-entry-remove" title="Remove row">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="ed-pf-error" id="voterEntryError" style="display:none;"></p>
+            </div>
+            <div class="ed-pf-footer">
+                <button type="button" class="ed-pf-import-toggle" id="toggleVoterImport">
+                    <i class="fas fa-file-import"></i>
+                    <span>Import from file</span>
+                </button>
+                <span class="ed-pf-footer-spacer"></span>
+                <button class="ed-pf-add-btn ed-pf-add-btn--teal" id="sendInvitationsBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Send Invitations</span>
+                </button>
+            </div>
+            <!-- Import panel — shown by toggling .ed-pf-import--open (CSS class), not inline style -->
+            <div class="ed-pf-import" id="voterImportSection">
+                <div class="ed-pf-import-header">
+                    <span class="ed-pf-import-title"><i class="fas fa-file-import"></i> Import Voter List</span>
+                    <button type="button" class="ed-pf-import-close" id="closeVoterImport" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="ed-pf-import-hint">Download a template, fill in voter details, then upload. The imported voters will be loaded into the entry form below — review them, then click <strong>Send Invitations</strong>. Required columns: <code>Voter Email</code> (required), <code>Voter Name</code> (optional). Max 5 MB.</p>
+                <div class="ed-pf-import-templates">
+                    <a class="ed-pf-tpl-btn"
+                       href="{% url 'elections:export_template' election_uuid=election.election_uuid template_type='voters' %}?format=csv"
+                       title="Download CSV template">
+                        <i class="fas fa-file-csv"></i> CSV Template
+                    </a>
+                    <a class="ed-pf-tpl-btn ed-pf-tpl-btn--excel"
+                       href="{% url 'elections:export_template' election_uuid=election.election_uuid template_type='voters' %}?format=xlsx"
+                       title="Download Excel template">
+                        <i class="fas fa-file-excel"></i> Excel Template
+                    </a>
+                </div>
+                <div class="ed-pf-dropzone" id="voterDropzone">
+                    <div class="ed-pf-dropzone-inner">
+                        <i class="fas fa-cloud-upload-alt ed-pf-dropzone-icon"></i>
+                        <p class="ed-pf-dropzone-text">Drag &amp; drop your file here</p>
+                        <p class="ed-pf-dropzone-sub">or</p>
+                        <label class="ed-pf-dropzone-btn">
+                            <input type="file" id="voterFileInput" accept=".csv,.xlsx,.xls" hidden>
+                            Choose File
+                        </label>
+                    </div>
+                    <div class="ed-pf-dropzone-filename" id="voterFileName" style="display:none;"></div>
+                </div>
+                <div class="ed-upload-progress" id="voterUploadProgress" style="display:none;">
+                    <div class="ed-progress-bar"><div class="ed-progress-fill" id="voterProgressFill"></div></div>
+                    <p class="ed-progress-text" id="voterProgressText"></p>
+                </div>
+                <p class="ed-pf-error" id="voterUploadError" style="display:none;"></p>
+            </div>
+        </div>
+
+        <!-- IN-PERSON / PDF PANEL -->
+        <div class="ed-voters-invite-panel" id="voterInPersonPanel"
+             role="tabpanel" aria-labelledby="tab-invite-inperson">
+            <div class="ed-pf-header">
+                <div class="ed-section-icon" style="--sec-bg: rgba(88,86,214,.1); --sec-clr: var(--apple-purple, #5856d6);">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="ed-pf-header-text">
+                    <h4 class="ed-pf-title">Generate Voter Credentials (PDF)</h4>
+                    <p class="ed-pf-desc mt-2">Create a printable PDF with unique, one-time-use login credentials for in-person voters. Print and distribute the credentials securely on election day.</p>
+                    <p class="ed-pf-desc mb-2">The PDF is password-protected. Save the password carefully, as it will only be shown once.</p>
+                        
+                    
+                </div>
+            </div>
+            <div class="ed-pf-body">
+                <div class="ed-offline-form">
+                    <div class="ed-field-group mt-2">
+                        <label class="ed-label mb-2" for="offlineCount">Number of Credential Sets</label>
+                        <input type="number" id="offlineCount" class="ed-input mb-2" min="1" max="500" value="10" placeholder="1 - 500">
+                    </div>
+                    <button class="ed-pf-add-btn ed-pf-add-btn--purple mb-2" id="generateOfflineBtn">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Generate Credentials</span>
+                    </button>
+                </div>
+                <p class="ed-pf-error" id="offlineError" style="display:none;"></p>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="ed-voters-locked">
+        <i class="fas fa-lock"></i>
+        <p>Voter management is locked after election launch.</p>
+    </div>
+    {% endif %}
+
+    <!-- ACCESS REQUESTS — Review panel (inside email tab, above email voters table) -->
+    {% if election.can_edit %}
+    <div class="ed-section ed-section--access-requests" id="accessRequestsSection"
+         data-url="{% url 'elections:access_requests' election_uuid=election.election_uuid %}"
+         data-approve-url-template="{% url 'elections:approve_access_request' election_uuid=election.election_uuid request_id=0 %}"
+         data-reject-url-template="{% url 'elections:reject_access_request' election_uuid=election.election_uuid request_id=0 %}">
+
+        <!-- Toggle button -->
+        <button type="button" class="ed-ar-toggle" id="arToggleBtn">
+            <div class="ed-ar-toggle-left">
+                <div class="ed-section-icon" style="--sec-bg: rgba(255,149,0,.1); --sec-clr: var(--apple-orange, #ff9500);">
+                    <i class="fas fa-hand-paper"></i>
+                </div>
+                <div>
+                    <span class="ed-ar-toggle-title">Review Voting Access Requests</span>
+                    <span class="ed-badge ed-badge-orange ed-badge-xs ms-2" id="accessRequestCount">{{ pending_access_requests }}</span>
+                </div>
+            </div>
+            <i class="fas fa-chevron-down ed-ar-chevron"></i>
+        </button>
+
+        <!-- Collapsible panel -->
+        <div class="ed-ar-panel" id="arPanel" style="display:none;">
+            <!-- Access Code + Link (single row) -->
+            <div class="ed-ar-code-row">
+                <div class="ed-ar-code-item">
+                    <span class="ed-ar-code-label">Access Code:</span>
+                    <code class="ed-ar-code-value" id="electionAccessCode">{{ election.access_code }}</code>
+                    <button type="button" class="ed-btn-icon ed-ar-copy-code" title="Copy access code"
+                            onclick="navigator.clipboard.writeText('{{ election.access_code }}'); this.innerHTML='<i class=\'fas fa-check\'></i>'; setTimeout(() => this.innerHTML='<i class=\'fas fa-copy\'></i>', 2000);">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                | 
+                <div class="ed-ar-code-item ed-ar-code-item--link">
+                    <span class="ed-ar-code-label">Access Link:</span>
+                    <code class="ed-ar-code-value ed-ar-link-value" id="electionAccessLink">{{ request.scheme }}://{{ request.get_host }}{% url 'voting:voter_access_request' %}?code={{ election.access_code }}</code>
+                    <button type="button" class="ed-btn-icon ed-ar-copy-code" title="Copy access link" id="arCopyLinkBtn">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <span class="ed-ar-code-hint">Share this code or link with voters to allow them to request voting access directly. All requests must be verified before credentials are issued.</span>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="ed-vt-toolbar ed-ar-toolbar">
+                <div class="ed-vt-search" id="arVtSearch">
+                    <button class="ed-vt-search-toggle" id="arSearchToggle" type="button" title="Search requests">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <input type="text" class="ed-vt-search-input" id="arSearchInput"
+                           placeholder="Search by name or email…" autocomplete="off" />
+                </div>
+                <div class="ed-vt-sort" id="arVtSort">
+                    <button class="ed-vt-sort-toggle" id="arSortToggle" type="button" title="Sort / Filter">
+                        <i class="fas fa-arrow-down-wide-short"></i>
+                    </button>
+                    <div class="ed-vt-sort-dropdown" id="arSortDropdown">
+                        <button class="ed-vt-sort-option active" data-sort="newest"><i class="fas fa-calendar-minus"></i> Newest First</button>
+                        <button class="ed-vt-sort-option" data-sort="oldest"><i class="fas fa-calendar-plus"></i> Oldest First</button>
+                        <button class="ed-vt-sort-option" data-sort="name-asc"><i class="fas fa-arrow-down-a-z"></i> Name A–Z</button>
+                        <button class="ed-vt-sort-option" data-sort="name-desc"><i class="fas fa-arrow-up-z-a"></i> Name Z–A</button>
+                    </div>
+                </div>
+                <button class="ed-voter-action-btn ed-voter-action-btn--green" id="arApproveAllBtn" title="Approve all pending requests">
+                    <i class="fas fa-check-double"></i><span>Approve All</span>
+                </button>
+                <button class="ed-voter-action-btn ed-voter-action-btn--danger" id="arRejectAllBtn" title="Reject all pending requests">
+                    <i class="fas fa-times"></i><span>Reject All</span>
+                </button>
+                <a class="ed-voter-action-btn ed-voter-action-btn--pdf" id="arExportPdfBtn"
+                   href="{% url 'candidates:export_voters_pdf' election_uuid=election.election_uuid %}?type=access_requests"
+                   target="_blank" title="Export pending requests as PDF">
+                    <i class="fas fa-file-pdf"></i><span>PDF</span>
+                </a>
+                <a class="ed-voter-action-btn" id="arExportExcelBtn"
+                   href="{% url 'candidates:export_voters_excel' election_uuid=election.election_uuid %}?type=access_requests"
+                   target="_blank" title="Export pending requests as Excel">
+                    <i class="fas fa-file-excel"></i><span>Excel</span>
+                </a>
+            </div>
+
+            <!-- Table -->
+            <div class="ed-table-wrap">
+                <table class="ed-table" id="arTable">
+                    <thead>
+                        <tr>
+                            <th class="ed-th-sn">S.N.</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th class="ed-th-timeline">Requested On</th>
+                            <th class="ed-th-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="arTableBody">
+                        <tr><td colspan="5" class="text-center text-muted"><i class="fas fa-spinner fa-spin me-1"></i>Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ed-ar-empty" id="arEmptyState" style="display:none;">
+                <i class="fas fa-check-circle"></i>
+                <p>No access requests yet.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- EMAIL INVITED VOTERS TABLE -->
+    <div class="ed-voters-section" id="emailVotersSection">
+        {% if email_voters %}
+
+        <div class="ed-vt-toolbar">
+            <!-- Search (expands on click, admin-home style) -->
+            <div class="ed-vt-search" id="emailVtSearch">
+                <button class="ed-vt-search-toggle" id="emailSearchToggle" type="button" title="Search voters">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="text" class="ed-vt-search-input" id="emailVoterSearch"
+                       placeholder="Search by name or email…" autocomplete="off" />
+            </div>
+            <!-- Sort / Filter (dropdown, admin-home style) -->
+            <div class="ed-vt-sort" id="emailVtSort">
+                <button class="ed-vt-sort-toggle" id="emailSortToggle" type="button" title="Sort / Filter">
+                    <i class="fas fa-arrow-down-wide-short"></i>
+                </button>
+                <div class="ed-vt-sort-dropdown" id="emailSortDropdown">
+                    <button class="ed-vt-sort-option active" data-sort="newest"><i class="fas fa-calendar-minus"></i> Newest First</button>
+                    <button class="ed-vt-sort-option" data-sort="oldest"><i class="fas fa-calendar-plus"></i> Oldest First</button>
+                    <button class="ed-vt-sort-option" data-sort="name-asc"><i class="fas fa-arrow-down-a-z"></i> Name A–Z</button>
+                    <button class="ed-vt-sort-option" data-sort="name-desc"><i class="fas fa-arrow-up-z-a"></i> Name Z–A</button>
+                    <div class="ed-vt-sort-divider"></div>
+                    <button class="ed-vt-sort-option" data-sort="filter:all"><span class="ed-vt-dot" style="background:var(--text-tertiary)"></span> All Status</button>
+                    <button class="ed-vt-sort-option" data-sort="filter:invited"><span class="ed-vt-dot" style="background:var(--apple-blue)"></span> Invited</button>
+                    <button class="ed-vt-sort-option" data-sort="filter:voted"><span class="ed-vt-dot" style="background:var(--apple-green)"></span> Voted</button>
+                    <button class="ed-vt-sort-option" data-sort="filter:failed"><span class="ed-vt-dot" style="background:var(--apple-yellow,#ffcc00)"></span> Invitation Failed</button>
+                    <button class="ed-vt-sort-option" data-sort="filter:pending"><span class="ed-vt-dot" style="background:var(--text-tertiary)"></span> Pending</button>
+                    <button class="ed-vt-sort-option" data-sort="filter:revoked"><span class="ed-vt-dot" style="background:var(--apple-orange)"></span> Revoked</button>
+                </div>
+            </div>
+            <!-- Action buttons -->
+            <a class="ed-voter-action-btn ed-voter-action-btn--pdf" id="downloadVoterListPdf"
+               href="{% url 'candidates:export_voters_pdf' election_uuid=election.election_uuid %}"
+               target="_blank" title="Export voter list as PDF">
+                <i class="fas fa-file-pdf"></i><span>Export PDF</span>
+            </a>
+            <!-- BUG-12: expose Excel export that exists in backend but had no UI -->
+            <a class="ed-voter-action-btn" id="downloadVoterListExcel"
+               href="{% url 'candidates:export_voters_excel' election_uuid=election.election_uuid %}"
+               target="_blank" title="Export voter list as Excel">
+                <i class="fas fa-file-excel"></i><span>Excel</span>
+            </a>
+            {% if voter_stats.failed > 0 %}
+            <button class="ed-voter-action-btn ed-voter-action-btn--warn" id="viewFailuresBtn"
+                    title="View invitation failure details"
+                    data-failed-url="{{ failed_invitations_url }}">
+                <i class="fas fa-exclamation-triangle"></i><span>{{ voter_stats.failed }} Failed</span>
+            </button>
+            {% endif %}
+            {% if election.can_edit %}
+            <button class="ed-voter-action-btn" id="resendAllBtn" title="Resend all invitations">
+                <i class="fas fa-paper-plane"></i><span>Resend All</span>
+            </button>
+            <button class="ed-voter-action-btn ed-voter-action-btn--danger" id="revokeAllBtn" title="Revoke all voters">
+                <i class="fas fa-ban"></i><span>Revoke All</span>
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="ed-table-wrap">
+            <table class="ed-table" id="emailVoterTable">
+                <thead>
+                    <tr>
+                        <th class="ed-th-sn">S.N.</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th class="ed-th-timeline">Timeline</th>
+                        {% if election.can_edit %}<th class="ed-th-actions">Actions</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody id="emailVoterTableBody">
+                    {% for voter in email_voters %}
+                    <tr data-voter-id="{{ voter.id }}"
+                        data-name="{{ voter.voter_name|default:'' }}"
+                        data-email="{{ voter.voter_email }}"
+                        data-invited="{{ voter.invited_at|date:'U'|default:'0' }}"
+                        data-status="{% if voter.is_revoked %}revoked{% elif voter.has_voted %}voted{% elif voter.invitation_sent %}invited{% elif voter.invitation_error %}failed{% else %}pending{% endif %}"
+                        data-regen-url="{% url 'candidates:regenerate_credential' election_uuid=election.election_uuid credential_id=voter.id %}"
+                        data-revoke-url="{% url 'candidates:revoke_voter' election_uuid=election.election_uuid credential_id=voter.id %}">
+                        <td class="ed-entry-sn">{{ forloop.counter }}</td>
+                        <td>{{ voter.voter_name|default:"&mdash;" }}</td>
+                        <td class="ed-voter-email">{{ voter.voter_email }}</td>
+                        <td>
+                            {% if voter.is_revoked %}
+                                <span class="ed-badge ed-badge-orange"><i class="fas fa-ban"></i> Revoked</span>
+                            {% elif voter.has_voted %}
+                                <span class="ed-badge ed-badge-green"><i class="fas fa-check-circle"></i> Voted</span>
+                            {% elif voter.invitation_sent %}
+                                <span class="ed-badge ed-badge-blue"><i class="fas fa-envelope"></i> Invited</span>
+                            {% elif voter.invitation_error %}
+                                <span class="ed-badge ed-badge-yellow" title="{{ voter.invitation_error|escapejs }}"><i class="fas fa-exclamation-triangle"></i> Invitation Failed</span>
+                            {% else %}
+                                <span class="ed-badge ed-badge-gray"><i class="fas fa-clock"></i> Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="ed-timeline-cell">
+                            {% if voter.invited_at %}
+                            <div class="ed-tl-event ed-tl-invited">
+                                <span class="ed-tl-dot"></span>
+                                <span class="ed-tl-label">Invited</span>
+                                <span class="ed-tl-time">{{ voter.invited_at|date:"M d, H:i" }}</span>
+                            </div>
+                            {% endif %}
+                            {% if voter.credentials_resent_at %}
+                            <div class="ed-tl-event ed-tl-resent">
+                                <span class="ed-tl-dot"></span>
+                                <span class="ed-tl-label">Resent</span>
+                                <span class="ed-tl-time">{{ voter.credentials_resent_at|date:"M d, H:i" }}</span>
+                            </div>
+                            {% endif %}
+                            {% if voter.revoked_at %}
+                            <div class="ed-tl-event ed-tl-revoked">
+                                <span class="ed-tl-dot"></span>
+                                <span class="ed-tl-label">Revoked</span>
+                                <span class="ed-tl-time">{{ voter.revoked_at|date:"M d, H:i" }}</span>
+                            </div>
+                            {% endif %}
+                            {% if not voter.invited_at and not voter.credentials_resent_at and not voter.revoked_at %}
+                            <span class="ed-ts-nil">&mdash;</span>
+                            {% endif %}
+                        </td>
+                        {% if election.can_edit %}
+                        <td class="ed-voter-actions">
+                            {% if not voter.has_voted %}
+                            <button class="ed-btn-icon ed-regen-btn"
+                                    data-url="{% url 'candidates:regenerate_credential' election_uuid=election.election_uuid credential_id=voter.id %}"
+                                    title="{% if voter.is_revoked %}Reinstate &amp; resend credentials{% else %}Resend credentials{% endif %}">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            {% if not voter.is_revoked %}
+                            <button class="ed-btn-icon ed-revoke-btn"
+                                    data-email="{{ voter.voter_email }}"
+                                    data-url="{% url 'candidates:revoke_voter' election_uuid=election.election_uuid credential_id=voter.id %}"
+                                    title="Revoke access">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            {% endif %}
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="ed-voter-table-empty" id="emailTableEmpty" style="display:none;">
+            <i class="fas fa-filter"></i>
+            <p>No voters match the current filter.</p>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <!-- PDF GENERATED CREDENTIALS TABLE -->
+    <div class="ed-voters-section" id="batchVotersSection" style="display:none;">
+        {% if voter_batches %}
+        <div class="ed-vt-toolbar">
+            <!-- Search -->
+            <div class="ed-vt-search" id="batchVtSearch">
+                <button class="ed-vt-search-toggle" id="batchSearchToggle" type="button" title="Search batches">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="text" class="ed-vt-search-input" id="batchSearch"
+                       placeholder="Search by batch number…" autocomplete="off" />
+            </div>
+            <!-- Sort -->
+            <div class="ed-vt-sort" id="batchVtSort">
+                <button class="ed-vt-sort-toggle" id="batchSortToggle" type="button" title="Sort">
+                    <i class="fas fa-arrow-down-wide-short"></i>
+                </button>
+                <div class="ed-vt-sort-dropdown" id="batchSortDropdown">
+                    <button class="ed-vt-sort-option active" data-sort="newest"><i class="fas fa-calendar-minus"></i> Newest First</button>
+                    <button class="ed-vt-sort-option" data-sort="oldest"><i class="fas fa-calendar-plus"></i> Oldest First</button>
+                </div>
+            </div>
+            <!-- Action buttons -->
+            <a class="ed-voter-action-btn ed-voter-action-btn--pdf" id="downloadBatchListPdf"
+               href="{% url 'candidates:export_voters_pdf' election_uuid=election.election_uuid %}"
+               target="_blank" title="Export voter list as PDF">
+                <i class="fas fa-file-pdf"></i><span>Export PDF</span>
+            </a>
+            {% if election.can_edit %}
+            <button class="ed-voter-action-btn ed-voter-action-btn--danger" id="revokeAllBatchesBtn" title="Revoke all batch credentials">
+                <i class="fas fa-ban"></i><span>Revoke All</span>
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="ed-table-wrap">
+            <table class="ed-table" id="batchTable">
+                <thead>
+                    <tr>
+                        <th class="ed-th-sn">S.N.</th>
+                        <th>Batch</th>
+                        <th>Credentials</th>
+                        <th>Voted</th>
+                        <th class="ed-th-timeline">Timeline</th>
+                        {% if election.can_edit %}<th class="ed-th-actions">Actions</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody id="batchTableBody">
+                    {% for batch in voter_batches %}
+                    <tr data-batch="{{ batch.batch_number }}">
+                        <td class="ed-entry-sn">{{ forloop.counter }}</td>
+                        <td><span class="ed-batch-tag">{{ batch.batch_number }}</span></td>
+                        <td>{{ batch.total }}</td>
+                        <td>{{ batch.voted }}</td>
+                        <td class="ed-timeline-cell">
+                            {% if batch.generated_at %}
+                            <div class="ed-tl-event ed-tl-invited">
+                                <span class="ed-tl-dot"></span>
+                                <span class="ed-tl-label">Generated</span>
+                                <span class="ed-tl-time">{{ batch.generated_at|date:"M d, H:i" }}</span>
+                            </div>
+                            {% endif %}
+                            {% if batch.batch_revoked_at and batch.revoked_count > 0 %}
+                            <div class="ed-tl-event ed-tl-revoked">
+                                <span class="ed-tl-dot"></span>
+                                <span class="ed-tl-label">Revoked{% if batch.revoked_count < batch.total %} ({{ batch.revoked_count }}/{{ batch.total }}){% endif %}</span>
+                                <span class="ed-tl-time">{{ batch.batch_revoked_at|date:"M d, H:i" }}</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% if election.can_edit %}
+                        <td class="ed-voter-actions">
+                            {% if batch.revoked_count < batch.total %}
+                            <button class="ed-voter-action-btn ed-voter-action-btn--danger ed-batch-revoke-btn"
+                                    data-batch="{{ batch.batch_number }}"
+                                    title="Revoke all in batch">
+                                <i class="fas fa-ban"></i><span>Revoke</span>
+                            </button>
+                            {% else %}
+                            <span class="ed-badge ed-badge-orange ed-badge-xs"><i class="fas fa-ban"></i> All Revoked</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% endif %}
+    </div>
+
+</div>

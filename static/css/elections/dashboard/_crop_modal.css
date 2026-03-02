@@ -1,0 +1,134 @@
+/* ═══════════════════════════════════════════════════════════════
+   _crop_modal.css — Cropper.js image crop modal
+   Prefix: ed-crop-*
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Modal overlay ─── */
+.ed-crop-modal {
+    display: none;           /* Hidden by default — JS adds .is-open to show */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Only animate when actually opening — never on page load */
+.ed-crop-modal.is-open {
+    display: flex;
+    animation: edCropFadeIn .2s ease;
+}
+@keyframes edCropFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.ed-crop-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* ─── Modal card ─── */
+.ed-crop-modal-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, .97);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    width: min(92vw, 480px);
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .25), 0 0 0 1px rgba(0, 0, 0, .06);
+    animation: edCropSlideUp .25s ease;
+}
+@keyframes edCropSlideUp {
+    from { opacity: 0; transform: translateY(16px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* ─── Header ─── */
+.ed-crop-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.ed-crop-modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+.ed-crop-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: .55;
+    transition: opacity .15s;
+    line-height: 1;
+    padding: .15rem .3rem;
+    border-radius: .35rem;
+}
+.ed-crop-modal-close:hover { opacity: 1; background: rgba(0,0,0,.06); }
+
+/* ─── Body (Cropper.js canvas container) ─── */
+.ed-crop-modal-body {
+    width: 100%;
+    max-height: 360px;
+    overflow: hidden;
+    border-radius: .625rem;
+    background: #f5f5f7;
+}
+.ed-crop-modal-body img {
+    display: block;
+    max-width: 100%;
+}
+
+/* ─── Footer ─── */
+.ed-crop-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: .75rem;
+    margin-top: 1rem;
+}
+
+/* ─── Buttons (reuse dashboard token pattern) ─── */
+.ed-crop-modal-footer .ed-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .5rem 1.1rem;
+    border-radius: .5rem;
+    font-size: .85rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+}
+.ed-crop-modal-footer .ed-btn:active { transform: scale(.97); }
+
+.ed-crop-modal-footer .ed-btn--secondary {
+    background: rgba(0,0,0,.06);
+    color: inherit;
+}
+.ed-crop-modal-footer .ed-btn--secondary:hover { background: rgba(0,0,0,.1); }
+
+.ed-crop-modal-footer .ed-btn--primary {
+    background: var(--apple-blue, #007aff);
+    color: #fff;
+}
+.ed-crop-modal-footer .ed-btn--primary:hover { background: #0066dd; }
+
+/* ─── Dark mode ─── */
+[data-theme="dark"] .ed-crop-modal-content {
+    background: rgba(30, 30, 34, .97);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08);
+}
+[data-theme="dark"] .ed-crop-modal-close:hover { background: rgba(255,255,255,.08); }
+[data-theme="dark"] .ed-crop-modal-body { background: #1c1c1e; }
+[data-theme="dark"] .ed-crop-modal-footer .ed-btn--secondary {
+    background: rgba(255,255,255,.08);
+}
+[data-theme="dark"] .ed-crop-modal-footer .ed-btn--secondary:hover { background: rgba(255,255,255,.12); }

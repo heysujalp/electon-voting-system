@@ -1,0 +1,14 @@
+INFO 2026-03-02 19:05:55,476 autoreload 98580 8592552064 /Users/sujal/Documents/ElectON/Voting APP/Voting APP V2/apps/blockchain/models.py changed, reloading.
+INFO 2026-03-02 19:05:56,652 autoreload 1934 8592552064 Watching for file changes with StatReloader
+INFO 2026-03-02 19:07:48,305 autoreload 1934 8592552064 /Users/sujal/Documents/ElectON/Voting APP/Voting APP V2/apps/blockchain/models.py changed, reloading.
+INFO 2026-03-02 19:07:49,139 autoreload 2251 8592552064 Watching for file changes with StatReloader
+INFO 2026-03-02 19:16:54,611 basehttp 2251 6170030080 "GET /elections/0c7e6e73-33c7-4714-9173-004841fd2963/ HTTP/1.1" 302 0
+INFO 2026-03-02 19:16:54,637 basehttp 2251 6170030080 "GET /accounts/login/?next=/elections/0c7e6e73-33c7-4714-9173-004841fd2963/ HTTP/1.1" 200 15748
+INFO 2026-03-02 19:16:54,684 basehttp 2251 6170030080 "GET /static/css/base.css HTTP/1.1" 304 0
+INFO 2026-03-02 19:16:54,684 basehttp 2251 6186856448 "GET /static/css/auth/auth.css HTTP/1.1" 304 0
+INFO 2026-03-02 19:16:54,990 basehttp 2251 6203682816 "GET /static/favicons/site.webmanifest HTTP/1.1" 304 0
+INFO 2026-03-02 19:16:55,064 basehttp 2251 6186856448 "GET /static/favicons/favicon.ico HTTP/1.1" 304 0
+INFO 2026-03-02 19:16:56,898 basehttp 2251 6186856448 "GET / HTTP/1.1" 200 26097
+INFO 2026-03-02 19:16:56,933 basehttp 2251 6186856448 "GET /static/js/core/home.js HTTP/1.1" 304 0
+INFO 2026-03-02 19:17:02,780 basehttp 2251 6186856448 "GET /accounts/login/ HTTP/1.1" 200 15748
+INFO 2026-03-02 19:17:07,046 basehttp 2251 6186856448 "GET /accounts/register/ HTTP/1.1" 200 19207

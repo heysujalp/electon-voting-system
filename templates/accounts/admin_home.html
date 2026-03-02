@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}My Elections{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/accounts/admin_home.css' %}">
+{% endblock %}
+
+{% block full_content %}
+<div class="dash">
+
+    <!-- ─── Floating Orbs (matches homepage) ─── -->
+    <div class="dash-orbs">
+        <div class="dash-orb dash-orb-1"></div>
+        <div class="dash-orb dash-orb-2"></div>
+        <div class="dash-orb dash-orb-3"></div>
+    </div>
+
+    <div class="dash-container">
+
+        <!-- ─── Greeting Header ─── -->
+        <header class="dash-header">
+            <div class="dash-header-text">
+                <h1 class="dash-headline">
+                    <span class="dash-icon-circle"><i class="fas fa-gauge-high"></i></span>
+                    Welcome back, {{ first_name }}!
+                </h1>
+                <p class="dash-subheadline">
+                    Create, manage, and monitor your elections from one place.
+                </p>
+            </div>
+            <a href="{% url 'accounts:account_settings' %}"
+               class="dash-header-settings" title="Account settings"
+               aria-label="Account settings">
+                <i class="fas fa-gear"></i>
+            </a>
+        </header>
+
+        <!-- ─── Stats Strip ─── -->
+        {% if elections %}
+        <section class="dash-stats">
+            <div class="dash-stats-grid">
+                <div class="dash-stat">
+                    <div class="dash-stat-icon" style="--s-bg: rgba(0,122,255,0.1); --s-clr: var(--apple-blue);">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-value">{{ elections|length }}</span>
+                        <span class="dash-stat-label">Total Elections</span>
+                    </div>
+                </div>
+                <div class="dash-stat-divider"></div>
+                <div class="dash-stat">
+                    <div class="dash-stat-icon" style="--s-bg: rgba(52,199,89,0.1); --s-clr: var(--apple-green);">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-value">{{ active_count }}</span>
+                        <span class="dash-stat-label">Active Now</span>
+                    </div>
+                </div>
+                <div class="dash-stat-divider"></div>
+                <div class="dash-stat">
+                    <div class="dash-stat-icon" style="--s-bg: rgba(88,86,214,0.1); --s-clr: var(--apple-indigo);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-value">{{ total_voters_all }}</span>
+                        <span class="dash-stat-label">Total Voters</span>
+                    </div>
+                </div>
+                <div class="dash-stat-divider"></div>
+                <div class="dash-stat">
+                    <div class="dash-stat-icon" style="--s-bg: rgba(255,149,0,0.1); --s-clr: var(--apple-orange);">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-value">{{ total_votes_all }}</span>
+                        <span class="dash-stat-label">Votes Cast</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- ─── Elections Section ─── -->
+        <section class="dash-elections">
+            {% if elections %}
+            <!-- Toolbar: heading + new button + search + sort -->
+            <div class="dash-toolbar">
+                <div class="dash-toolbar-left">
+                    <h2 class="dash-section-heading">All Elections</h2>
+                </div>
+                <div class="dash-toolbar-right">
+                    <!-- Search -->
+                    <div class="dash-search" id="dashSearch">
+                        <button class="dash-search-toggle" id="searchToggle" type="button" title="Search elections">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <input type="text" class="dash-search-input" id="searchInput"
+                               placeholder="Search by name…" autocomplete="off" />
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="dash-sort" id="dashSort">
+                        <button class="dash-sort-toggle" id="sortToggle" type="button" title="Sort elections">
+                            <i class="fas fa-arrow-down-wide-short"></i>
+                        </button>
+                        <div class="dash-sort-dropdown" id="sortDropdown">
+                            <button class="dash-sort-option active" data-sort="date-desc">
+                                <i class="fas fa-calendar-minus"></i> Newest First
+                            </button>
+                            <button class="dash-sort-option" data-sort="date-asc">
+                                <i class="fas fa-calendar-plus"></i> Oldest First
+                            </button>
+                            <button class="dash-sort-option" data-sort="name-asc">
+                                <i class="fas fa-arrow-down-a-z"></i> Name A–Z
+                            </button>
+                            <button class="dash-sort-option" data-sort="name-desc">
+                                <i class="fas fa-arrow-up-z-a"></i> Name Z–A
+                            </button>
+                            <div class="dash-sort-divider"></div>
+                            <button class="dash-sort-option" data-sort="status-active">
+                                <span class="status-dot" style="background:var(--apple-green);"></span> Active
+                            </button>
+                            <button class="dash-sort-option" data-sort="status-pre-launch">
+                                <span class="status-dot" style="background:var(--apple-blue);"></span> Pre-launch
+                            </button>
+                            <button class="dash-sort-option" data-sort="status-inactive">
+                                <span class="status-dot" style="background:var(--apple-yellow);"></span> Inactive
+                            </button>
+                            <button class="dash-sort-option" data-sort="status-concluded">
+                                <span class="status-dot" style="background:var(--apple-red);"></span> Concluded
+                            </button>
+                            <div class="dash-sort-divider"></div>
+                            <button class="dash-sort-option" data-sort="all">
+                                <i class="fas fa-border-all"></i> Show All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- New Election -->
+                    <a href="{% url 'elections:create' %}" class="dash-btn-new">
+                        <i class="fas fa-plus"></i> <span class="dash-btn-new-label">New Election</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- No-results message (hidden by CSS, shown by JS via .show class) -->
+            <div class="dash-no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <p>No elections match your search.</p>
+            </div>
+
+            <div class="dash-elections-grid" id="electionsGrid">
+                {% for election in elections %}
+                <div class="dash-election-card"
+                   data-name="{{ election.name|lower }}"
+                   data-created="{{ election.created_at|date:'Y-m-d H:i:s' }}"
+                   data-status="{{ election.current_status|lower }}"
+                   data-eid="{{ election.election_uuid }}"
+                   data-href="{% url 'elections:dashboard' election_uuid=election.election_uuid %}">
+
+                    <!-- Status ribbon -->
+                    <div class="dash-card-ribbon
+                        {% if election.current_status == 'Active' %}ribbon-active
+                        {% elif election.current_status == 'Pre-launch' %}ribbon-pre-launch
+                        {% elif election.current_status == 'Inactive' %}ribbon-inactive
+                        {% else %}ribbon-concluded{% endif %}"></div>
+
+                    <div class="dash-card-top">
+                        <div class="dash-card-identity">
+                            <h3 class="dash-card-title" title="{{ election.name }}">{{ election.name }}</h3>
+                            <div class="dash-card-meta-row">
+                                <span class="dash-card-id"><i class="fas fa-key"></i> {{ election.access_code }}</span>
+                            </div>
+                        </div>
+                        <div class="dash-card-actions">
+                            <span class="dash-card-status
+                                {% if election.current_status == 'Active' %}status-active
+                                {% elif election.current_status == 'Pre-launch' %}status-pre-launch
+                                {% elif election.current_status == 'Inactive' %}status-inactive
+                                {% else %}status-concluded{% endif %}">
+                                <span class="status-dot"></span>
+                                {{ election.current_status }}
+                            </span>
+                            <a href="{% url 'elections:dashboard' election_uuid=election.election_uuid %}"
+                               class="dash-card-manage">
+                                <i class="fas fa-sliders"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="dash-card-dates">
+                        {% timezone election.timezone %}
+                        <div class="dash-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ election.start_time|date:"M d, Y" }}</span>
+                        </div>
+                        <i class="fas fa-arrow-right dash-date-arrow"></i>
+                        <div class="dash-meta-item">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>{{ election.end_time|date:"M d, Y" }}</span>
+                        </div>
+                        {% endtimezone %}
+                    </div>
+
+                    <div class="dash-card-stats" data-stat-url="{% url 'elections:election_stats' election_uuid=election.election_uuid %}">
+                        <div class="dash-card-stat">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span class="dash-card-stat-value" data-stat-key="posts">{{ election.total_posts }}</span>
+                            <span class="dash-card-stat-label">Positions</span>
+                        </div>
+                        <div class="dash-card-stat">
+                            <i class="fas fa-user-tie"></i>
+                            <span class="dash-card-stat-value" data-stat-key="candidates">{{ election.total_candidates }}</span>
+                            <span class="dash-card-stat-label">Candidates</span>
+                        </div>
+                        <div class="dash-card-stat">
+                            <i class="fas fa-users"></i>
+                            <span class="dash-card-stat-value" data-stat-key="voters">{{ election.total_voters }}</span>
+                            <span class="dash-card-stat-label">Voters</span>
+                        </div>
+                        <div class="dash-card-stat">
+                            <i class="fas fa-check-double"></i>
+                            <span class="dash-card-stat-value" data-stat-key="votes">{{ election.votes_cast }}</span>
+                            <span class="dash-card-stat-label">Votes</span>
+                        </div>
+                    </div>
+
+                    {% if election.current_status == 'Active' and election.total_voters > 0 %}
+                    <div class="dash-turnout">
+                        <div class="dash-turnout-header">
+                            <span class="dash-turnout-label">Voter Turnout</span>
+                            <span class="dash-turnout-pct">
+                                {% widthratio election.votes_cast election.total_voters 100 %}%
+                            </span>
+                        </div>
+                        <div class="dash-turnout-track">
+                            <div class="dash-turnout-fill
+                                {% if election.current_status == 'Active' %}fill-active
+                                {% elif election.current_status == 'Concluded' %}fill-concluded
+                                {% else %}fill-default{% endif %}"
+                                data-pct="{% widthratio election.votes_cast election.total_voters 100 %}"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- ─── Empty State ─── -->
+            <div class="dash-empty">
+                <div class="dash-empty-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3>No elections yet</h3>
+                <p>Create your first election and start collecting votes in minutes.</p>
+                <a href="{% url 'elections:create' %}" class="dash-btn-new" style="border-radius:var(--radius-full); padding:0.8rem 2rem;">
+                    <i class="fas fa-plus"></i> Create Your First Election
+                </a>
+            </div>
+            {% endif %}
+        </section>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/accounts/admin_home.js' %}"></script>
+<script>
+/* ═══  SSE: Live election card stats  ═══ */
+(function () {
+    var STREAM_URL = "{% url 'elections:user_stream' %}";
+    var es = null, retries = 0, maxRetries = 5, timer = null;
+
+    function updateCard(data) {
+        var eid = data.election_uuid;
+        if (!eid) return;
+        var card = document.querySelector('.dash-election-card[data-eid="' + eid + '"]');
+        if (!card) return;
+        var statsBox = card.querySelector('.dash-card-stats');
+        if (!statsBox) return;
+        ['posts', 'candidates', 'voters', 'votes'].forEach(function (key) {
+            if (data[key] !== undefined) {
+                var el = statsBox.querySelector('[data-stat-key="' + key + '"]');
+                if (el) el.textContent = data[key];
+            }
+        });
+        /* Update turnout bar */
+        if (data.voters && data.votes !== undefined) {
+            var fill = card.querySelector('.dash-turnout-fill');
+            if (fill) {
+                var pct = data.voters > 0 ? Math.round((data.votes / data.voters) * 100) : 0;
+                fill.style.width = pct + '%';
+                fill.dataset.pct = pct;
+            }
+        }
+        /* Update status badge */
+        if (data.status) {
+            var badge = card.querySelector('.dash-card-status');
+            if (badge) {
+                var statusMap = {
+                    'pre-launch': { cls: 'status-draft', text: 'Pre-launch' },
+                    'inactive':   { cls: 'status-inactive', text: 'Inactive' },
+                    'active':     { cls: 'status-active', text: 'Active' },
+                    'live':       { cls: 'status-active', text: 'Live' },
+                    'concluded':  { cls: 'status-concluded', text: 'Concluded' }
+                };
+                var s = statusMap[data.status];
+                if (s) {
+                    badge.className = 'dash-card-status ' + s.cls;
+                    badge.textContent = s.text;
+                }
+            }
+        }
+    }
+
+    function handleEvent(e) {
+        try {
+            var d = JSON.parse(e.data);
+            updateCard(d);
+        } catch (_) {}
+    }
+
+    function connect() {
+        if (es) es.close();
+        es = new EventSource(STREAM_URL);
+        es.onopen = function () { retries = 0; };
+
+        /* Backend sends named events via "event:" field — must use addEventListener */
+        es.addEventListener('stats_update', handleEvent);
+        es.addEventListener('vote_cast', handleEvent);
+        es.addEventListener('election_update', handleEvent);
+        es.addEventListener('access_request', handleEvent);
+        es.addEventListener('voter_update', handleEvent);
+        es.addEventListener('blockchain_update', handleEvent);
+
+        es.onerror = function () {
+            es.close();
+            es = null;
+            if (++retries <= maxRetries) {
+                timer = setTimeout(connect, Math.min(2000 * Math.pow(2, retries - 1), 32000));
+            } else {
+                /* Fallback: refresh on tab re-focus */
+                document.addEventListener('visibilitychange', fallbackRefresh);
+            }
+        };
+    }
+
+    function fallbackRefresh() {
+        if (document.visibilityState !== 'visible') return;
+        document.querySelectorAll('.dash-card-stats[data-stat-url]').forEach(function (container) {
+            var url = container.dataset.statUrl;
+            if (!url) return;
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function (res) { return res.ok ? res.json() : null; })
+                .then(function (data) {
+                    if (!data || !data.success) return;
+                    container.querySelectorAll('[data-stat-key]').forEach(function (el) {
+                        var key = el.dataset.statKey;
+                        if (data[key] !== undefined) el.textContent = data[key];
+                    });
+                })
+                .catch(function () {});
+        });
+    }
+
+    /* Start SSE when page loads */
+    connect();
+
+    /* Cleanup on navigation */
+    window.addEventListener('beforeunload', function () {
+        if (es) es.close();
+        clearTimeout(timer);
+    });
+})();
+</script>
+{% endblock %}

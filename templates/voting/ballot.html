@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Vote — {{ election.name }}{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/voting/ballot.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="vote-wrapper py-4">
+    {% if is_preview %}
+    <div class="preview-banner">
+        <i class="fas fa-eye me-2"></i><strong>Preview Mode</strong> — This is how your ballot will appear to voters. Votes cannot be submitted.
+    </div>
+    {% endif %}
+
+    <div class="vote-header">
+        <h2>{{ election.name }}</h2>
+        {% if voter_name %}<p class="voter-greeting">Welcome, <strong>{{ voter_name }}</strong></p>{% endif %}
+        {% if admin_message %}<div class="admin-msg"><i class="fas fa-info-circle me-2"></i>{{ admin_message }}</div>{% endif %}
+    </div>
+
+    <form id="voteForm" action="#" data-vote-url="{% url 'voting:vote' %}" role="form" aria-label="Voting ballot">
+        {% csrf_token %}
+
+        {% for post in posts %}
+        <div class="post-section" role="group" aria-labelledby="post-heading-{{ post.pk }}"
+             {% if election.allow_abstain %}data-abstain="true"{% endif %}>
+            <div class="post-header" id="post-heading-{{ post.pk }}">
+                <i class="fas fa-poll me-2" aria-hidden="true"></i>{{ post.name }}
+            </div>
+            <div class="post-body">
+                <p class="hint" id="post-hint-{{ post.pk }}"><i class="fas fa-hand-pointer me-1" aria-hidden="true"></i>Select one candidate{% if election.allow_abstain %} or choose NOTA{% endif %}:</p>
+                {% for candidate in post.candidates.all %}
+                <label class="candidate-option" for="candidate_{{ candidate.pk }}">
+                    <input type="radio" name="post_{{ post.pk }}" value="{{ candidate.pk }}" id="candidate_{{ candidate.pk }}"{% if not election.allow_abstain %} required{% endif %}>
+                    <div class="candidate-radio"></div>
+                    {% if candidate.image %}
+                    <img src="{{ candidate.image_url }}" alt="{{ candidate.name }}" class="candidate-avatar">
+                    {% else %}
+                    <div class="candidate-avatar-placeholder"><i class="fas fa-user"></i></div>
+                    {% endif %}
+                    <div class="candidate-info">
+                        <strong>{{ candidate.name }}</strong>
+                        {% if candidate.bio %}<small>{{ candidate.bio }}</small>{% endif %}
+                    </div>
+                </label>
+                {% endfor %}
+
+                {% if election.allow_abstain %}
+                <label class="candidate-option abstain-option" for="abstain_{{ post.pk }}">
+                    <input type="radio" name="post_{{ post.pk }}" value="abstain" id="abstain_{{ post.pk }}">
+                    <div class="candidate-radio"></div>
+                    <div class="abstain-icon-placeholder"><i class="fas fa-ban"></i></div>
+                    <div class="candidate-info">
+                        <strong>NOTA</strong>
+                        <small>None Of The Above — skip this position</small>
+                    </div>
+                </label>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div id="voteError" class="vote-error"></div>
+
+        <div class="vote-actions">
+            {% if is_preview %}
+            <button type="button" class="btn btn-outline-apple btn-sm px-5" disabled>
+                <i class="fas fa-eye me-2"></i>Preview Only — Cannot Submit
+            </button>
+            {% else %}
+            <button type="submit" class="btn btn-apple-green btn-lg px-5" id="submitVoteBtn">
+                <i class="fas fa-check-circle me-2"></i>Submit Vote
+            </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/voting/ballot.js' %}"></script>
+{% endblock %}

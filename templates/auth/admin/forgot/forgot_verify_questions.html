@@ -1,0 +1,98 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Verify Identity{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-orange">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h2>Verify Identity</h2>
+            <p>Answer your security questions to prove you own this account.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-shield-alt"></i></div>
+                    <span>Secure verification</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-user-check"></i></div>
+                    <span>Identity confirmation</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-lock"></i></div>
+                    <span>Account protection</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-right">
+            <!-- Step Indicator: 1 done, 2 active, 3-4 pending -->
+            <div class="auth-steps">
+                <div class="auth-step completed">
+                    <div class="auth-step-dot completed"><i class="fas fa-check" style="font-size: 0.65rem;"></i></div>
+                </div>
+                <div class="auth-step-line filled"></div>
+                <div class="auth-step active">
+                    <div class="auth-step-dot active">2</div>
+                </div>
+                <div class="auth-step-line empty"></div>
+                <div class="auth-step">
+                    <div class="auth-step-dot pending">3</div>
+                </div>
+                <div class="auth-step-line empty"></div>
+                <div class="auth-step">
+                    <div class="auth-step-dot pending">4</div>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="auth-error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <h2 style="text-align: center;">Security Questions</h2>
+            <p class="auth-subtitle" style="text-align: center;">Answer all 3 questions for <strong>{{ email }}</strong></p>
+
+            <form method="post" action="{% url 'accounts:reset_verify_questions' %}" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="security-q-pair">
+                    <div class="auth-form-group" style="margin-bottom: 0;">
+                        <label class="auth-form-label">
+                            <span class="security-q-number">{{ forloop.counter }}</span> {{ field.label }}
+                        </label>
+                        <div class="auth-input-group">
+                            <i class="fas fa-pen input-icon"></i>
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in field.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-auth-primary">
+                    <i class="fas fa-arrow-right me-2"></i>Verify & Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

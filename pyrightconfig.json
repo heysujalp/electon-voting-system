@@ -1,0 +1,15 @@
+{
+  "venvPath": ".",
+  "venv": "venv",
+  "extraPaths": ["."],
+  "pythonVersion": "3.13",
+  "reportMissingImports": "warning",
+  "reportMissingModuleSource": "warning",
+  // Django generates reverse FK accessors (election.posts, election.voter_credentials,
+  // post.candidates) and annotated fields (candidate_count) at runtime — Pylance
+  // cannot see them from static analysis alone.  Suppress attribute-access and
+  // operator/call false-positives that originate from these patterns.
+  "reportAttributeAccessIssue": "none",
+  "reportOperatorIssue": "none",
+  "ignore": ["apps/blockchain/services/program_service.py"]
+}

@@ -1,0 +1,30 @@
+[project]
+name = "electon"
+version = "2.0.0"
+description = "ElectON — Secure Online Voting Platform with Blockchain Integrity"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["apps", "electon"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "UP", "S", "A", "C4", "DJ"]
+ignore = ["S101", "DJ001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "electon"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "electon.settings.testing"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--strict-markers --tb=short -q"
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*", "*/tests/*", "*/admin.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

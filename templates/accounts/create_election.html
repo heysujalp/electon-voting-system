@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Edit Election{% else %}Create Election{% endif %}{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/accounts/create_election.css' %}">
+{% endblock %}
+
+{% block full_content %}
+<div class="ce">
+
+    <!-- Floating Orbs -->
+    <div class="ce-orbs">
+        <div class="ce-orb ce-orb-1"></div>
+        <div class="ce-orb ce-orb-2"></div>
+        <div class="ce-orb ce-orb-3"></div>
+    </div>
+
+    <div class="ce-container">
+
+        <!-- ═══ PAGE HERO ═══ -->
+        <header class="ce-hero">
+            <div class="ce-hero-icon">
+                <i class="fas fa-check-to-slot"></i>
+            </div>
+            <div class="ce-hero-text">
+                <h1 class="ce-headline">{% if is_edit %}Edit Election{% else %}Create Your Election{% endif %}</h1>
+                <p class="ce-subheadline">
+                    {% if is_edit %}Update your election details below.
+                    {% else %}Set up your election in a few quick steps. You'll add positions, candidates &amp; voters from the dashboard.{% endif %}
+                </p>
+            </div>
+        </header>
+
+        <!-- ═══ MAIN FORM CARD ═══ -->
+        <form method="post" action="{% if is_edit %}{% url 'elections:edit' election.election_uuid %}{% else %}{% url 'elections:create' %}{% endif %}" class="ce-form" novalidate>
+            {% csrf_token %}
+
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+            <div class="ce-alert ce-alert-error">
+                <i class="fas fa-circle-exclamation"></i>
+                <div>
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="ce-grid">
+                <!-- ─── Left Column ─── -->
+                <div class="ce-col-main">
+
+                    <!-- Election Identity -->
+                    <section class="ce-card">
+                        <div class="ce-card-header">
+                            <div class="ce-card-icon" style="--c-bg: rgba(0,122,255,0.1); --c-clr: var(--apple-blue);">
+                                <i class="fas fa-pen-fancy"></i>
+                            </div>
+                            <div>
+                                <h2 class="ce-card-title">Election Identity</h2>
+                                <p class="ce-card-desc">Give your election a name and choose its type.</p>
+                            </div>
+                        </div>
+
+                        <div class="ce-row ce-row-3-2">
+                            <div class="ce-field">
+                                <label for="{{ form.name.id_for_label }}" class="ce-label">
+                                    Election Name
+                                </label>
+                                <div class="ce-input-group{% if form.name.errors %} ce-error{% endif %}">
+                                    <i class="fas fa-heading ce-icon"></i>
+                                    {{ form.name }}
+                                </div>
+                                {% if form.name.errors %}
+                                <p class="ce-field-err"><i class="fas fa-circle-exclamation"></i> {% for e in form.name.errors %}{{ e }}{% endfor %}</p>
+                                {% endif %}
+                                <p class="ce-hint">e.g. "Student Council Election 2026"</p>
+                            </div>
+                    </section>
+
+                    <!-- Voting Schedule -->
+                    <section class="ce-card">
+                        <div class="ce-card-header">
+                            <div class="ce-card-icon" style="--c-bg: rgba(52,199,89,0.1); --c-clr: var(--apple-green);">
+                                <i class="fas fa-calendar-days"></i>
+                            </div>
+                            <div>
+                                <h2 class="ce-card-title">Voting Schedule</h2>
+                                <p class="ce-card-desc">Define when voting opens and closes.</p>
+                            </div>
+                        </div>
+
+                        <div class="ce-row">
+                            <div class="ce-field">
+                                <label for="{{ form.start_time.id_for_label }}" class="ce-label">Start Date &amp; Time</label>
+                                <div class="ce-input-group ce-datetime{% if form.start_time.errors %} ce-error{% endif %}">
+                                    {{ form.start_time }}
+                                </div>
+                                {% if form.start_time.errors %}
+                                <p class="ce-field-err"><i class="fas fa-circle-exclamation"></i> {% for e in form.start_time.errors %}{{ e }}{% endfor %}</p>
+                                {% endif %}
+                                <p class="ce-field-err ce-js-err" id="startTimeErr"></p>
+                            </div>
+                            <div class="ce-field">
+                                <label for="{{ form.end_time.id_for_label }}" class="ce-label">End Date &amp; Time</label>
+                                <div class="ce-input-group ce-datetime{% if form.end_time.errors %} ce-error{% endif %}">
+                                    {{ form.end_time }}
+                                </div>
+                                {% if form.end_time.errors %}
+                                <p class="ce-field-err"><i class="fas fa-circle-exclamation"></i> {% for e in form.end_time.errors %}{{ e }}{% endfor %}</p>
+                                {% endif %}
+                                <p class="ce-field-err ce-js-err" id="endTimeErr"></p>
+                            </div>
+                        </div>
+
+                        <div class="ce-duration-bar" id="durationBar">
+                            <i class="fas fa-clock"></i>
+                            <span id="durationText"></span>
+                        </div>
+
+                        <div class="ce-field">
+                            <label class="ce-label">Timezone</label>
+                            <div class="ce-input-group ce-tz-select{% if form.timezone.errors %} ce-error{% endif %}">
+                                <i class="fas fa-globe ce-icon"></i>
+                                {{ form.timezone }}
+                            </div>
+                            {% if form.timezone.errors %}
+                            <p class="ce-field-err"><i class="fas fa-circle-exclamation"></i> {% for e in form.timezone.errors %}{{ e }}{% endfor %}</p>
+                            {% endif %}
+                            <p class="ce-hint">All times will be shown to voters in this timezone.</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- ─── Right Column ─── -->
+                <div class="ce-col-side">
+
+                    <!-- Custom Message Toggle Card -->
+                    <section class="ce-card">
+                        <div class="ce-card-header">
+                            <div class="ce-card-icon" style="--c-bg: rgba(255,149,0,0.1); --c-clr: var(--apple-orange, #ff9500);">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <div>
+                                <h2 class="ce-card-title">Voter Message</h2>
+                                <p class="ce-card-desc">Optional message shown on the ballot page.</p>
+                            </div>
+                            <label class="ce-toggle" for="adminMsgToggle">
+                                <input type="checkbox" id="adminMsgToggle"
+                                       {% if form.admin_message.value %}checked{% endif %}>
+                                <span class="ce-toggle-track"></span>
+                            </label>
+                        </div>
+
+                        <div class="ce-msg-area" id="adminMsgArea" {% if not form.admin_message.value %}style="display:none;"{% endif %}>
+                            <div class="ce-field">
+                                <label for="{{ form.admin_message.id_for_label }}" class="ce-label">Message</label>
+                                <div class="ce-input-group{% if form.admin_message.errors %} ce-error{% endif %}">
+                                    {{ form.admin_message }}
+                                </div>
+                                {% if form.admin_message.errors %}
+                                <p class="ce-field-err"><i class="fas fa-circle-exclamation"></i> {% for e in form.admin_message.errors %}{{ e }}{% endfor %}</p>
+                                {% endif %}
+                                <p class="ce-hint">Max 2000 characters. HTML tags will be stripped.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Steps Preview Card -->
+                    <section class="ce-card ce-steps-card">
+                        <div class="ce-card-header">
+                            <div class="ce-card-icon" style="--c-bg: rgba(88,86,214,0.1); --c-clr: var(--apple-purple, #5856d6);">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div>
+                                <h2 class="ce-card-title">What's Next?</h2>
+                                <p class="ce-card-desc">After creating your election:</p>
+                            </div>
+                        </div>
+                        <div class="ce-steps">
+                            <div class="ce-step">
+                                <div class="ce-step-num"><i class="fas fa-columns"></i></div>
+                                <div>
+                                    <h4>Add Positions</h4>
+                                    <p>Define what roles voters will elect</p>
+                                </div>
+                            </div>
+                            <div class="ce-step">
+                                <div class="ce-step-num"><i class="fas fa-user-tie"></i></div>
+                                <div>
+                                    <h4>Add Candidates</h4>
+                                    <p>Assign candidates to each position</p>
+                                </div>
+                            </div>
+                            <div class="ce-step">
+                                <div class="ce-step-num"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <h4>Register Voters</h4>
+                                    <p>Add voters by email or generate credentials</p>
+                                </div>
+                            </div>
+                            <div class="ce-step">
+                                <div class="ce-step-num"><i class="fas fa-rocket"></i></div>
+                                <div>
+                                    <h4>Launch</h4>
+                                    <p>Deploy to blockchain and start voting</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ─── Actions ─── -->
+            <div class="ce-actions">
+                <a href="{% if is_edit %}{% url 'elections:dashboard' election.election_uuid %}{% else %}{% url 'elections:manage' %}{% endif %}" class="ce-btn-cancel">Cancel</a>
+                <button type="submit" class="ce-btn-submit">
+                    <i class="fas fa-{% if is_edit %}save{% else %}check{% endif %}"></i>
+                    <span>{% if is_edit %}Save Changes{% else %}Create Election{% endif %}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/accounts/create_election.js' %}"></script>
+{% endblock %}

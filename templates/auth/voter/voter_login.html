@@ -1,0 +1,81 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Voter Login{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-green">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel — Branding -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-vote-yea"></i>
+            </div>
+            <h2>Voter Access</h2>
+            <p>Use the one-time credentials provided by your election administrator to cast your vote.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-fingerprint"></i></div>
+                    <span>One-time credentials</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-user-secret"></i></div>
+                    <span>Anonymous & secure</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-check-circle"></i></div>
+                    <span>Cast your vote easily</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel — Form -->
+        <div class="auth-right">
+            <h2>Voter Login</h2>
+            <p class="auth-subtitle">Enter the one-time credentials provided by your election administrator</p>
+
+            <form id="voterLoginForm" method="POST" action="{% url 'voting:api_voter_login' %}" data-login-url="{% url 'voting:api_voter_login' %}" novalidate>
+                {% csrf_token %}
+
+                <div class="auth-form-group">
+                    <label for="username" class="visually-hidden">Voter Username</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-user input-icon" aria-hidden="true"></i>
+                        <input type="text" class="form-control" id="username" name="username"
+                               placeholder="Username" autocomplete="off" required
+                               aria-label="Voter username">
+                    </div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="password" class="visually-hidden">One-time Password</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Password" autocomplete="off" required
+                               aria-label="One-time password">
+                        <button type="button" class="password-toggle" data-target="password" aria-label="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Vote
+                </button>
+            </form>
+
+            <div class="auth-links">
+               Don't have credentials? <a href="{% url 'voting:voter_access_request' %}"><i class="fas fa-hand-paper me-1"></i>Request Access</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/auth/voter_login.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,243 @@
+{# ElectON — Shared email base layout. Child templates extend this for consistency. #}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>{% block email_title %}ElectON{% endblock %}</title>
+    <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+    <style>
+        /* Reset */
+        body, table, td, p, a, li, blockquote { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; } /* stylelint-disable-line property-no-unknown — Outlook CSS */
+        img { border: 0; outline: none; text-decoration: none; display: block; }
+
+        /* Base */
+        body {
+            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f5f5f7;
+            padding: 40px 20px;
+        }
+        .email-container {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        }
+
+        /* Header */
+        .email-header {
+            padding: 32px 32px 24px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f2;
+        }
+        .email-logo-mark {
+            display: inline-block;
+            width: 44px;
+            height: 44px;
+            margin-bottom: 12px;
+            border: 0;
+            outline: none;
+        }
+        .email-brand {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #1d1d1f;
+            margin: 0;
+        }
+        .email-subtitle {
+            font-size: 14px;
+            font-weight: 500;
+            color: #86868b;
+            margin: 6px 0 0;
+        }
+
+        /* Body */
+        .email-body {
+            padding: 28px 32px 32px;
+        }
+        .email-body p {
+            margin: 0 0 14px;
+            font-size: 15px;
+            color: #333336;
+        }
+        .email-body p:last-child { margin-bottom: 0; }
+
+        /* Code / credential block */
+        .email-code-box {
+            text-align: center;
+            font-size: 34px;
+            letter-spacing: 10px;
+            font-weight: 700;
+            color: #1d1d1f;
+            background: #f5f5f7;
+            border: 1px solid #e5e5ea;
+            padding: 18px 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .email-credential-box {
+            background: #f5f5f7;
+            border: 1px solid #e5e5ea;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin: 20px 0;
+        }
+        .email-credential-row {
+            display: flex;
+            align-items: baseline;
+            margin: 6px 0;
+            font-size: 14px;
+            color: #333336;
+        }
+        .email-credential-row:first-child { margin-top: 0; }
+        .email-credential-row:last-child { margin-bottom: 0; }
+        .email-credential-label {
+            display: inline-block;
+            width: 90px;
+            font-weight: 600;
+            color: #86868b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .email-credential-value {
+            font-weight: 600;
+            color: #1d1d1f;
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        /* CTA button */
+        .email-cta-wrap { text-align: center; margin: 24px 0 8px; }
+        .email-cta {
+            display: inline-block;
+            background: #007AFF;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 13px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.1px;
+            mso-line-height-rule: exactly; /* stylelint-disable-line property-no-unknown — Outlook CSS */
+        }
+        .email-cta:hover { background: #0060d0; }
+
+        /* Warning / info callout */
+        .email-warning {
+            background: #FFF8E1;
+            border: 1px solid #FFE082;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 18px 0 0;
+            font-size: 13px;
+            color: #7B6B2D;
+            text-align: center;
+        }
+        .email-info {
+            font-size: 13px;
+            color: #86868b;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        .email-footer {
+            padding: 20px 32px;
+            text-align: center;
+            border-top: 1px solid #f0f0f2;
+            background: #fafafa;
+        }
+        .email-footer p {
+            margin: 0;
+            font-size: 12px;
+            color: #aeaeb2;
+        }
+        .email-footer a { color: #86868b; text-decoration: none; }
+
+        /* Accent overrides — set via inline style on .email-cta  */
+        .accent-orange { background: #FF9500 !important; }
+        .accent-orange:hover { background: #e08600 !important; }
+
+        /* Dark mode (mail clients that support it) */
+        @media (prefers-color-scheme: dark) {
+            body, .email-wrapper { background-color: #1c1c1e !important; }
+            .email-container { background: #2c2c2e !important; box-shadow: 0 2px 12px rgba(0,0,0,.3) !important; }
+            .email-header { border-bottom-color: #3a3a3c !important; }
+            .email-brand { color: #f5f5f7 !important; }
+            .email-subtitle { color: #a1a1a6 !important; }
+            .email-body p { color: #d1d1d6 !important; }
+            .email-code-box {
+                background: #3a3a3c !important;
+                border-color: #48484a !important;
+                color: #f5f5f7 !important;
+            }
+            .email-credential-box {
+                background: #3a3a3c !important;
+                border-color: #48484a !important;
+            }
+            .email-credential-label { color: #a1a1a6 !important; }
+            .email-credential-value { color: #f5f5f7 !important; }
+            .email-warning {
+                background: #3a3a2e !important;
+                border-color: #5a5a40 !important;
+                color: #d4c87a !important;
+            }
+            .email-info { color: #a1a1a6 !important; }
+            .email-footer { background: #1c1c1e !important; border-top-color: #3a3a3c !important; }
+            .email-footer p { color: #636366 !important; }
+            .email-logo-mark { color: #f5f5f7 !important; }
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 560px) {
+            .email-wrapper { padding: 16px 10px !important; }
+            .email-container { border-radius: 12px !important; }
+            .email-header, .email-body, .email-footer { padding-left: 20px !important; padding-right: 20px !important; }
+            .email-code-box { font-size: 28px !important; letter-spacing: 6px !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:520px;margin:0 auto;">
+            <tr><td>
+                <div class="email-container">
+                    <!-- Header -->
+                    <div class="email-header">
+                        <img src="data:image/png;base64,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" width="44" height="44" alt="ElectON" style="display:block;margin:0 auto 0;border:0;outline:none;" />
+                        <h1 class="email-brand">ElectON</h1>
+                        {% block email_subtitle_block %}
+                        <p class="email-subtitle">{% block email_subtitle %}{% endblock %}</p>
+                        {% endblock %}
+                    </div>
+
+                    <!-- Body -->
+                    <div class="email-body">
+                        {% block email_content %}{% endblock %}
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="email-footer">
+                        <p>&copy; {% now "Y" %} ElectON &mdash; Secure Online Voting</p>
+                    </div>
+                </div>
+            </td></tr>
+        </table>
+    </div>
+</body>
+</html>

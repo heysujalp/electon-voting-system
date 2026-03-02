@@ -1,0 +1,54 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-green">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-ban"></i>
+            </div>
+            <h2>Voting Not Available</h2>
+            {% if election %}
+            <p>The election <strong>{{ election.name }}</strong> is currently <strong>{{ election.current_status }}</strong>.</p>
+            {% else %}
+            <p>The requested election was not found.</p>
+            {% endif %}
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-clock"></i></div>
+                    <span>Check back when voting opens</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-envelope"></i></div>
+                    <span>Contact your administrator</span>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <h2>What happened?</h2>
+            {% if election %}
+                {% if election.current_status == 'Pre-launch' %}
+                <p class="auth-subtitle">This election has not been launched yet. You'll receive credentials once it's ready.</p>
+                {% elif election.current_status == 'Inactive' %}
+                <p class="auth-subtitle">This election has been launched but voting hasn't started yet. Please check back at the scheduled start time.</p>
+                {% elif election.current_status == 'Concluded' %}
+                <p class="auth-subtitle">This election has ended. Voting is no longer available.</p>
+                {% else %}
+                <p class="auth-subtitle">Voting is not available at this time.</p>
+                {% endif %}
+            {% else %}
+            <p class="auth-subtitle">The election you're looking for could not be found. Please verify the link provided by your administrator.</p>
+            {% endif %}
+            <a href="{% url 'public_home' %}" class="btn-auth-primary" style="display:inline-block; text-align:center; text-decoration:none;">
+                <i class="fas fa-home me-2"></i>Return Home
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

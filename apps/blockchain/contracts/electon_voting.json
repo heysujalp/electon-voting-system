@@ -1,0 +1,340 @@
+{
+  "version": "0.1.0",
+  "name": "electon_voting",
+  "instructions": [
+    {
+      "name": "cast_vote",
+      "accounts": [
+        {
+          "name": "election_state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "voter_index",
+          "type": "u32"
+        },
+        {
+          "name": "voter_hash",
+          "type": "bytes"
+        },
+        {
+          "name": "merkle_proof",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        },
+        {
+          "name": "votes",
+          "type": {
+            "vec": {
+              "defined": "VoteEntry"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_election",
+      "accounts": [
+        {
+          "name": "election_state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "finalize_election",
+      "accounts": [
+        {
+          "name": "election_state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_election",
+      "accounts": [
+        {
+          "name": "election_state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "system_program",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "election_uuid",
+          "type": "bytes"
+        },
+        {
+          "name": "config_hash",
+          "type": "bytes"
+        },
+        {
+          "name": "merkle_root",
+          "type": "bytes"
+        },
+        {
+          "name": "num_voters",
+          "type": "u32"
+        },
+        {
+          "name": "num_posts",
+          "type": "u8"
+        },
+        {
+          "name": "candidates_per_post",
+          "type": "bytes"
+        },
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [],
+  "types": [
+    {
+      "name": "ElectionState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "election_uuid",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "config_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "merkle_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "num_voters",
+            "type": "u32"
+          },
+          {
+            "name": "num_posts",
+            "type": "u8"
+          },
+          {
+            "name": "total_candidates",
+            "type": "u16"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_finalized",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "total_votes",
+            "type": "u64"
+          },
+          {
+            "name": "voted_bitfield",
+            "type": "bytes"
+          },
+          {
+            "name": "vote_counts",
+            "type": {
+              "vec": "u32"
+            }
+          },
+          {
+            "name": "candidates_per_post",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "post_index",
+            "type": "u8"
+          },
+          {
+            "name": "candidate_index",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidUuid",
+      "msg": "election_uuid must be exactly 16 bytes"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidConfigHash",
+      "msg": "config_hash must be exactly 32 bytes"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMerkleRoot",
+      "msg": "merkle_root must be exactly 32 bytes"
+    },
+    {
+      "code": 6003,
+      "name": "PostCountMismatch",
+      "msg": "candidates_per_post length must equal num_posts"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTimeRange",
+      "msg": "start_time must be before end_time"
+    },
+    {
+      "code": 6005,
+      "name": "NoVoters",
+      "msg": "Election must have at least one voter"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidVoterHash",
+      "msg": "Each voter hash must be exactly 32 bytes"
+    },
+    {
+      "code": 6007,
+      "name": "VoterNotRegistered",
+      "msg": "Voter index is out of range or voter is not registered"
+    },
+    {
+      "code": 6008,
+      "name": "AlreadyVoted",
+      "msg": "Voter has already cast their vote"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidMerkleProof",
+      "msg": "Invalid Merkle proof \u2014 voter hash not in the registered tree"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidPostIndex",
+      "msg": "post_index is out of range"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidCandidateIndex",
+      "msg": "candidate_index is out of range for this post"
+    },
+    {
+      "code": 6012,
+      "name": "DuplicatePostVote",
+      "msg": "Duplicate vote for the same post is not allowed"
+    },
+    {
+      "code": 6013,
+      "name": "VoteOverflow",
+      "msg": "Vote count overflow"
+    },
+    {
+      "code": 6014,
+      "name": "ElectionNotStarted",
+      "msg": "Election has not started yet"
+    },
+    {
+      "code": 6015,
+      "name": "ElectionEnded",
+      "msg": "Election voting period has ended"
+    },
+    {
+      "code": 6016,
+      "name": "ElectionNotEnded",
+      "msg": "Election has not ended yet"
+    },
+    {
+      "code": 6017,
+      "name": "AlreadyFinalized",
+      "msg": "Election has already been finalised"
+    },
+    {
+      "code": 6018,
+      "name": "ElectionNotFinalized",
+      "msg": "Election must be finalised before closing"
+    }
+  ],
+  "metadata": {
+    "address": "HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w"
+  }
+}

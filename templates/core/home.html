@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Secure Digital Voting Platform{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/core/home.css' %}">
+{% endblock %}
+
+{% block full_content %}
+<!-- ─── Hero ─── -->
+<section class="home-hero">
+    <div class="home-hero-orbs">
+        <div class="home-orb home-orb-1"></div>
+        <div class="home-orb home-orb-2"></div>
+        <div class="home-orb home-orb-3"></div>
+    </div>
+    <div class="home-hero-inner">
+        <p class="home-eyebrow">Blockchain-Powered Voting</p>
+        <h1 class="home-headline">
+            Democracy,<br>verified.
+        </h1>
+        <p class="home-subheadline">
+            Create transparent elections with anonymous, blockchain-verified votes
+            — in minutes, at zero cost.
+        </p>
+        <div class="home-hero-actions">
+            <a href="{% url 'accounts:register' %}" class="home-btn-primary">Get Started</a>
+            <a href="#how" class="home-btn-ghost">How It Works</a>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Roles ─── -->
+<section class="home-roles">
+    <div class="home-container">
+        <div class="home-roles-grid">
+            <a href="{% url 'voting:voter_login' %}" class="home-role-card">
+                <div class="home-role-icon voter"><i class="fas fa-check-to-slot"></i></div>
+                <h3>I'm a Voter</h3>
+                <p>Sign in with your voter credentials and cast your vote in seconds. Private, fast, done.</p>
+                <span class="home-role-link">Voter Sign In <i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="{% url 'accounts:login' %}" class="home-role-card">
+                <div class="home-role-icon admin"><i class="fas fa-sliders"></i></div>
+                <h3>I'm an Admin</h3>
+                <p>Create elections, add candidates, invite voters, and watch results come in live.</p>
+                <span class="home-role-link">Admin Sign In <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Stats Marquee ─── -->
+<section class="home-stats">
+    <div class="home-container">
+        <div class="home-stats-grid">
+            <div class="home-stat">
+                <span class="home-stat-value">100%</span>
+                <span class="home-stat-label">Free to Use</span>
+            </div>
+            <div class="home-stat-divider"></div>
+            <div class="home-stat">
+                <span class="home-stat-value">&lt; 2 min</span>
+                <span class="home-stat-label">Election Setup</span>
+            </div>
+            <div class="home-stat-divider"></div>
+            <div class="home-stat">
+                <span class="home-stat-value">Real-time</span>
+                <span class="home-stat-label">Results & Analytics</span>
+            </div>
+            <div class="home-stat-divider"></div>
+            <div class="home-stat">
+                <span class="home-stat-value">Any Device</span>
+                <span class="home-stat-label">Desktop · Tablet · Phone</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Features (8 cards, 2 rows) ─── -->
+<section id="features" class="home-features">
+    <div class="home-container">
+        <h2 class="home-section-heading">Everything you need to run an election.</h2>
+        <p class="home-section-sub">From voter management to PDF reports — all in one platform, no add-ons required.</p>
+
+        <div class="home-features-grid">
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(0, 122, 255, 0.1); --icon-color: var(--apple-blue);">
+                    <i class="fas fa-gauge-high"></i>
+                </div>
+                <h3>Real-Time Dashboard</h3>
+                <p>Live vote counts, participation rates, and interactive charts update the moment each ballot is cast.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(52, 199, 89, 0.1); --icon-color: var(--apple-green);">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h3>End-to-End Security</h3>
+                <p>Encrypted connections, rate limiting, session management, and two-factor admin authentication.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(255, 149, 0, 0.1); --icon-color: var(--apple-orange);">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h3>Email Invitations</h3>
+                <p>Invite voters by email with unique credentials. Automatic reminders keep participation high.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(88, 86, 214, 0.1); --icon-color: var(--apple-indigo);">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h3>PDF Reports</h3>
+                <p>Download professional election reports with full breakdowns the moment polls close.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(175, 82, 222, 0.1); --icon-color: var(--apple-purple);">
+                    <i class="fas fa-users-gear"></i>
+                </div>
+                <h3>Candidate Management</h3>
+                <p>Add candidates with photos, bios, and position assignments. Drag to reorder the ballot.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(255, 59, 48, 0.1); --icon-color: var(--apple-red);">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Smart Notifications</h3>
+                <p>Admins and voters get notified at every key moment — election start, reminders, and results.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(90, 200, 250, 0.1); --icon-color: var(--apple-teal);">
+                    <i class="fas fa-mobile-screen-button"></i>
+                </div>
+                <h3>Responsive Design</h3>
+                <p>Every screen — from election setup to voting booth — works flawlessly on any screen size.</p>
+            </div>
+            <div class="home-feature-card">
+                <div class="home-feature-icon" style="--icon-bg: rgba(0, 199, 190, 0.1); --icon-color: var(--apple-mint);">
+                    <i class="fas fa-clock-rotate-left"></i>
+                </div>
+                <h3>Audit Trail</h3>
+                <p>Complete activity logs for every action. Full transparency without compromising voter privacy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Blockchain Highlight (single wide card) ─── -->
+<section class="home-blockchain">
+    <div class="home-container">
+        <div class="home-blockchain-card">
+            <div class="home-blockchain-content">
+                <div class="home-blockchain-badge"><i class="fas fa-cube"></i> Blockchain Verified</div>
+                <h2>Tamper-proof by design.</h2>
+                <p>Every vote is hashed and recorded on the Solana blockchain. No one — not even us — can alter a
+                    single ballot after it's cast. Voters can independently verify their vote on-chain.</p>
+                <ul class="home-blockchain-points">
+                    <li><i class="fas fa-check"></i> Immutable vote records</li>
+                    <li><i class="fas fa-check"></i> Anonymous hash-based voting</li>
+                    <li><i class="fas fa-check"></i> Publicly auditable on-chain programs</li>
+                    <li><i class="fas fa-check"></i> Sub-second finality</li>
+                </ul>
+            </div>
+            <div class="home-blockchain-visual">
+                <div class="home-chain-block"><i class="fas fa-vote-yea"></i><span>Vote Cast</span></div>
+                <div class="home-chain-link"><i class="fas fa-link"></i></div>
+                <div class="home-chain-block"><i class="fas fa-fingerprint"></i><span>Hashed</span></div>
+                <div class="home-chain-link"><i class="fas fa-link"></i></div>
+                <div class="home-chain-block accent"><i class="fas fa-cube"></i><span>On-Chain</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── How It Works ─── -->
+<section id="how" class="home-how">
+    <div class="home-container">
+        <h2 class="home-section-heading">Three steps. That's it.</h2>
+        <p class="home-section-sub">From setup to results in the time it takes to make coffee.</p>
+
+        <div class="home-steps">
+            <div class="home-step">
+                <div class="home-step-num">1</div>
+                <div class="home-step-body">
+                    <h3>Create Your Election</h3>
+                    <p>Name it, set the voting window, add positions and candidates. Everything in one clean form.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">2</div>
+                <div class="home-step-body">
+                    <h3>Invite Voters</h3>
+                    <p>Upload a voter list or send email invitations. Each voter gets unique, one-time credentials.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">3</div>
+                <div class="home-step-body">
+                    <h3>Get Results</h3>
+                    <p>Votes are tallied in real time. View live dashboards, download PDF reports, or verify on-chain.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Use Cases ─── -->
+<section id="use-cases" class="home-usecases">
+    <div class="home-container">
+        <h2 class="home-section-heading">Built for every kind of election.</h2>
+        <p class="home-section-sub">From student councils to corporate boards — one platform fits all.</p>
+
+        <div class="home-usecases-grid">
+            <div class="home-usecase-card">
+                <div class="home-usecase-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h3>Student Government</h3>
+                <p>Run school or university elections with verified student voter lists and instant results.</p>
+            </div>
+            <div class="home-usecase-card">
+                <div class="home-usecase-icon"><i class="fas fa-building"></i></div>
+                <h3>Corporate Voting</h3>
+                <p>Board elections, shareholder votes, and committee selections — all auditable and secure.</p>
+            </div>
+            <div class="home-usecase-card">
+                <div class="home-usecase-icon"><i class="fas fa-people-group"></i></div>
+                <h3>Community Organizations</h3>
+                <p>HOAs, clubs, cooperatives, and nonprofits. Keep decision-making fair and transparent.</p>
+            </div>
+            <div class="home-usecase-card">
+                <div class="home-usecase-icon"><i class="fas fa-landmark"></i></div>
+                <h3>Unions & Associations</h3>
+                <p>Compliant voting for professional bodies and trade unions. Secure, private, verifiable.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Security Strip ─── -->
+<section class="home-security">
+    <div class="home-container">
+        <div class="home-security-inner">
+            <h2>Your data, locked down.</h2>
+            <p>Enterprise-grade security is not optional — it's the foundation.</p>
+            <div class="home-security-grid">
+                <div class="home-security-item">
+                    <i class="fas fa-lock"></i>
+                    <span>TLS Encryption</span>
+                </div>
+                <div class="home-security-item">
+                    <i class="fas fa-user-lock"></i>
+                    <span>Two-Factor Auth</span>
+                </div>
+                <div class="home-security-item">
+                    <i class="fas fa-ban"></i>
+                    <span>Rate Limiting</span>
+                </div>
+                <div class="home-security-item">
+                    <i class="fas fa-eye-slash"></i>
+                    <span>Voter Anonymity</span>
+                </div>
+                <div class="home-security-item">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Audit Logs</span>
+                </div>
+                <div class="home-security-item">
+                    <i class="fas fa-database"></i>
+                    <span>Encrypted Storage</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="home-cta">
+    <div class="home-container">
+        <div class="home-cta-inner">
+            <h2>Ready to run your first election?</h2>
+            <p>Free forever. No credit card. Set up in under two minutes.</p>
+            <div class="home-hero-actions">
+                <a href="{% url 'accounts:register' %}" class="home-btn-primary">Create Free Account</a>
+                <a href="{% url 'accounts:login' %}" class="home-btn-ghost">Sign In</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock full_content %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/core/home.js' %}"></script>
+{% endblock %}

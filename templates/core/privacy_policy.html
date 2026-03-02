@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <div class="legal-container">
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: <time datetime="2026-03-01">March 1, 2026</time></p>
+
+        <section>
+            <h2>1. Introduction</h2>
+            <p>ElectON ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal data when you use our online voting platform.</p>
+        </section>
+
+        <section>
+            <h2>2. Data We Collect</h2>
+            <h3>2.1 Account Data</h3>
+            <p>When you create an administrator account, we collect: your full name, email address, username, and security question answers (stored as salted cryptographic hashes).</p>
+
+            <h3>2.2 Voter Data</h3>
+            <p>Election administrators upload voter names and emails for credential generation. One-time credentials are hashed; we do <strong>not</strong> store plaintext passwords. Voter ballots are anonymised before recording.</p>
+
+            <h3>2.3 Technical Data</h3>
+            <p>We collect server logs (IP addresses, user-agent strings, timestamps) for security monitoring and abuse prevention. These logs are retained for 90 days.</p>
+        </section>
+
+        <section>
+            <h2>3. How We Use Your Data</h2>
+            <ul>
+                <li>To operate and maintain the ElectON voting platform</li>
+                <li>To send election invitations and credential emails on behalf of administrators</li>
+                <li>To verify your identity during login and password recovery</li>
+                <li>To detect and prevent fraud, abuse, and unauthorised access</li>
+                <li>To maintain audit trails for election integrity</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>4. Legal Basis for Processing (GDPR)</h2>
+            <p>We process your data based on:</p>
+            <ul>
+                <li><strong>Consent</strong> — when you create an account or participate in an election</li>
+                <li><strong>Legitimate Interest</strong> — for security monitoring, fraud prevention, and platform integrity</li>
+                <li><strong>Contractual Necessity</strong> — to provide the voting services you or your organisation requested</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>5. Data Sharing</h2>
+            <p>We do <strong>not</strong> sell your personal data. We may share data with:</p>
+            <ul>
+                <li><strong>Infrastructure providers</strong> — hosting, email delivery, and CDN services (data processing agreements in place)</li>
+                <li><strong>Blockchain networks</strong> — anonymised vote hashes are recorded on-chain for auditability; no personal data is stored on-chain</li>
+                <li><strong>Law enforcement</strong> — only when legally compelled by a valid court order</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>6. Data Retention</h2>
+            <p>Account data is retained while your account is active. Election data (including anonymised results) is retained for 12 months after an election ends, then permanently deleted. You may request earlier deletion.</p>
+        </section>
+
+        <section>
+            <h2>7. Your Rights</h2>
+            <p>Under GDPR, you have the right to:</p>
+            <ul>
+                <li>Access your personal data</li>
+                <li>Rectify inaccurate data</li>
+                <li>Request erasure ("right to be forgotten")</li>
+                <li>Restrict or object to processing</li>
+                <li>Data portability</li>
+                <li>Lodge a complaint with a supervisory authority</li>
+            </ul>
+            <p>To exercise any right, contact us at <a href="mailto:privacy@electon.app">privacy@electon.app</a>.</p>
+        </section>
+
+        <section>
+            <h2>8. Cookies</h2>
+            <p>ElectON uses only <strong>essential cookies</strong> (session ID, CSRF token, theme preference). We do <strong>not</strong> use tracking, analytics, or advertising cookies.</p>
+        </section>
+
+        <section>
+            <h2>9. Security</h2>
+            <p>We employ encryption in transit (TLS 1.3), hashed credential storage (PBKDF2 with per-hash salts), rate limiting, audit logging, and blockchain verification to protect your data.</p>
+        </section>
+
+        <section>
+            <h2>10. Changes to This Policy</h2>
+            <p>We may update this policy from time to time. Material changes will be communicated via email or in-app notification. Continued use after changes constitutes acceptance.</p>
+        </section>
+    </div>
+</div>
+{% endblock %}

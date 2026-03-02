@@ -1,0 +1,100 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Verify Reset Code{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-orange">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-envelope-open"></i>
+            </div>
+            <h2>Check Your Email</h2>
+            <p>We sent a 6-digit reset code to your email. Enter it below to continue.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-shield-alt"></i></div>
+                    <span>Secure verification</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-clock"></i></div>
+                    <span>Code expires in 15 min</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-redo"></i></div>
+                    <span>Resend if needed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-right">
+            <!-- Step Indicator: 1-2 done, 3 active, 4 pending -->
+            <div class="auth-steps">
+                <div class="auth-step completed">
+                    <div class="auth-step-dot completed"><i class="fas fa-check" style="font-size: 0.65rem;"></i></div>
+                </div>
+                <div class="auth-step-line filled"></div>
+                <div class="auth-step completed">
+                    <div class="auth-step-dot completed"><i class="fas fa-check" style="font-size: 0.65rem;"></i></div>
+                </div>
+                <div class="auth-step-line filled"></div>
+                <div class="auth-step active">
+                    <div class="auth-step-dot active">3</div>
+                </div>
+                <div class="auth-step-line empty"></div>
+                <div class="auth-step">
+                    <div class="auth-step-dot pending">4</div>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="auth-error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <h2 style="text-align: center;">Enter Reset Code</h2>
+            <p class="auth-subtitle" style="text-align: center;">Sent to <strong>{{ email }}</strong></p>
+
+            <form method="post" action="{% url 'accounts:reset_verify_code' %}" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="auth-form-group auth-code-input">
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="auth-field-error" style="justify-content: center;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in field.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-auth-primary">
+                    <i class="fas fa-check-circle me-2"></i>Verify Code
+                </button>
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <form method="post" action="{% url 'accounts:reset_verify_code' %}" style="text-align: center;">
+                {% csrf_token %}
+                <input type="hidden" name="resend" value="1">
+                <button type="submit" class="btn btn-outline-apple btn-sm" id="resendBtn"{% if not can_resend %} disabled{% endif %}>
+                    <i class="fas fa-redo me-1"></i>Resend Code
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

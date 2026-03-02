@@ -1,0 +1,169 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-blue">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel — Branding -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p>Set up your admin account and start running secure blockchain-powered elections.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-shield-alt"></i></div>
+                    <span>Blockchain-verified votes</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-bolt"></i></div>
+                    <span>Set up in minutes</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-chart-bar"></i></div>
+                    <span>Real-time analytics</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel — Form -->
+        <div class="auth-right">
+            <!-- Step Indicator -->
+            <div class="auth-steps">
+                <div class="auth-step active">
+                    <div class="auth-step-dot active">1</div>
+                </div>
+                <div class="auth-step-line empty"></div>
+                <div class="auth-step">
+                    <div class="auth-step-dot pending">2</div>
+                </div>
+                <div class="auth-step-line empty"></div>
+                <div class="auth-step">
+                    <div class="auth-step-dot pending">3</div>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="auth-error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'accounts:register' %}" novalidate id="registerForm">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="auth-form-group">
+                    <label for="id_username" class="visually-hidden">Username</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-at input-icon" aria-hidden="true"></i>
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.errors %}
+                    <div class="auth-field-error" id="id_username-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.username.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Full Name -->
+                <div class="auth-form-group">
+                    <label for="id_full_name" class="visually-hidden">Full Name</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-user input-icon" aria-hidden="true"></i>
+                        {{ form.full_name }}
+                    </div>
+                    {% if form.full_name.errors %}
+                    <div class="auth-field-error" id="id_full_name-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.full_name.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div class="auth-form-group">
+                    <label for="id_email" class="visually-hidden">Email Address</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="auth-field-error" id="id_email-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password -->
+                <div class="auth-form-group">
+                    <label for="id_password" class="visually-hidden">Password</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                        {{ form.password }}
+                        <button type="button" class="password-toggle" data-target="password" aria-label="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <!-- Password strength meter (injected by JS) -->
+                    <div class="password-meter" id="passwordMeter">
+                        <div class="password-meter-track">
+                            <div class="password-meter-fill" id="passwordFill"></div>
+                        </div>
+                        <span class="password-meter-label" id="passwordLabel"></span>
+                    </div>
+                    {% if form.password.errors %}
+                    <div class="auth-field-error" id="id_password-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.password.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="auth-form-group">
+                    <label for="id_confirm_password" class="visually-hidden">Confirm Password</label>
+                    <div class="auth-input-group">
+                        <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                        {{ form.confirm_password }}
+                        <button type="button" class="password-toggle" data-target="confirm_password" aria-label="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-match" id="passwordMatch"></div>
+                    {% if form.confirm_password.errors %}
+                    <div class="auth-field-error" id="id_confirm_password-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.confirm_password.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-auth-primary">
+                    <i class="fas fa-arrow-right me-2"></i>Continue
+                </button>
+            </form>
+
+            <div class="auth-links">
+                Already have an account?
+                <a href="{% url 'accounts:login' %}">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/auth/password.js' %}"></script>
+{% endblock %}

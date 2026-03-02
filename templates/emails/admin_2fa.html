@@ -1,0 +1,16 @@
+{% extends "emails/_base_email.html" %}
+
+{% block email_title %}Login Verification — ElectON{% endblock %}
+
+{% block email_subtitle %}Login Verification{% endblock %}
+
+{% block email_content %}
+<p>Hi {{ user_name }},</p>
+<p>A login attempt requires additional verification. Use this code:</p>
+
+<div class="email-code-box">{{ verification_code }}</div>
+
+<p class="email-info">This code expires in <strong>{{ expiry_minutes }} minutes</strong>.</p>
+
+<div class="email-warning">If you did not attempt to log in, please change your password immediately.</div>
+{% endblock %}

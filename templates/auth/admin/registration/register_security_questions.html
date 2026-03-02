@@ -1,0 +1,184 @@
+{% extends "auth/auth_base.html" %}
+{% load static %}
+
+{% block title %}Security Questions{% endblock %}
+
+{% block auth_page %}
+<div class="auth-theme-blue">
+<div class="auth-background"></div>
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Panel — Branding -->
+        <div class="auth-left">
+            <div class="auth-icon-badge">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Secure Your Account</h2>
+            <p>Security questions add an extra layer of protection for account recovery &amp; critical actions.</p>
+            <div class="auth-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-key"></i></div>
+                    <span>Password recovery</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed-light"><i class="fas fa-user-shield"></i></div>
+                    <span>Identity verification</span>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon themed"><i class="fas fa-shield-alt"></i></div>
+                    <span>Account protection</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel — Form -->
+        <div class="auth-right">
+            <!-- Step Indicator -->
+            <div class="auth-steps">
+                <div class="auth-step completed">
+                    <div class="auth-step-dot completed"><i class="fas fa-check" style="font-size: 0.65rem;"></i></div>
+                </div>
+                <div class="auth-step-line filled"></div>
+                <div class="auth-step completed">
+                    <div class="auth-step-dot completed"><i class="fas fa-check" style="font-size: 0.65rem;"></i></div>
+                </div>
+                <div class="auth-step-line filled"></div>
+                <div class="auth-step active">
+                    <div class="auth-step-dot active">3</div>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="auth-error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <h2 style="text-align: center;">Security Questions</h2>
+            <p class="auth-subtitle" style="text-align: center;">Choose 3 questions and provide your answers</p>
+
+            <form method="post" action="{% url 'accounts:security_questions' %}" novalidate id="securityQuestionsForm">
+                {% csrf_token %}
+
+                <!-- Question 1 -->
+                <div class="security-q-pair">
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">
+                            <span class="security-q-number">1</span> Question
+                        </label>
+                        {{ form.question_1 }}
+                        {% if form.question_1.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.question_1.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="auth-form-group" style="margin-bottom: 0;">
+                        <div class="auth-input-group">
+                            <i class="fas fa-pen input-icon"></i>
+                            {{ form.answer_1 }}
+                        </div>
+                        {% if form.answer_1.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.answer_1.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="security-q-pair">
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">
+                            <span class="security-q-number">2</span> Question
+                        </label>
+                        {{ form.question_2 }}
+                        {% if form.question_2.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.question_2.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="auth-form-group" style="margin-bottom: 0;">
+                        <div class="auth-input-group">
+                            <i class="fas fa-pen input-icon"></i>
+                            {{ form.answer_2 }}
+                        </div>
+                        {% if form.answer_2.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.answer_2.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="security-q-pair">
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">
+                            <span class="security-q-number">3</span> Question
+                        </label>
+                        {{ form.question_3 }}
+                        {% if form.question_3.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.question_3.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="auth-form-group" style="margin-bottom: 0;">
+                        <div class="auth-input-group">
+                            <i class="fas fa-pen input-icon"></i>
+                            {{ form.answer_3 }}
+                        </div>
+                        {% if form.answer_3.errors %}
+                        <div class="auth-field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% for error in form.answer_3.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth-primary">
+                    <i class="fas fa-check-circle me-2"></i>Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selects = document.querySelectorAll('.security-q-select');
+
+    function updateDisabledOptions() {
+        // Collect all currently selected values
+        const selected = new Set();
+        selects.forEach(s => { if (s.value) selected.add(s.value); });
+
+        // For each select, disable options chosen in other selects
+        selects.forEach(select => {
+            const options = select.querySelectorAll('option');
+            options.forEach(opt => {
+                if (opt.value === '') return; // skip placeholder
+                opt.disabled = selected.has(opt.value) && opt.value !== select.value;
+            });
+        });
+    }
+
+    selects.forEach(s => s.addEventListener('change', updateDisabledOptions));
+    updateDisabledOptions(); // initial state
+});
+</script>
+{% endblock %}

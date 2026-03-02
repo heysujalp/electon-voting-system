@@ -1,0 +1,1362 @@
+/* ===============================================
+   ElectON V2 — Account Settings (Sidebar Layout)
+   Apple glass morphism · View/Edit pattern
+   =============================================== */
+@import '../shared/_orbs.css';
+
+/* ─── Page Wrapper ─── */
+.settings-page {
+    position: relative;
+    min-height: calc(100vh - 80px);
+    padding: 3rem 0 6rem;
+}
+
+.settings-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Floating Orbs ─── */
+.settings-orbs {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.settings-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: orbFloatY 18s ease-in-out infinite;
+}
+
+.settings-orb-1 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.35) 0%, transparent 70%);
+    top: -120px; left: -80px;
+}
+
+.settings-orb-2 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(175, 82, 222, 0.3) 0%, transparent 70%);
+    top: 40%; right: -60px;
+    animation-delay: -6s;
+}
+
+.settings-orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(52, 199, 89, 0.25) 0%, transparent 70%);
+    bottom: -80px; left: 30%;
+    animation-delay: -12s;
+}
+
+/* settingsOrbFloat → orbFloatY from shared/_orbs.css */
+
+[data-theme="dark"] .settings-orb { opacity: 0.18; }
+
+/* ─── Page Header ─── */
+.settings-page-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.settings-page-header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-indigo));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.settings-page-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+}
+
+.settings-page-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 0.15rem;
+}
+
+/* ─── Two-Column Layout ─── */
+.settings-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* ─── Sidebar Navigation ─── */
+.settings-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+}
+
+.settings-nav {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(28px) saturate(1.6);
+    -webkit-backdrop-filter: blur(28px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-2xl);
+    padding: 0.5rem;
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .settings-nav {
+    background: rgba(28, 28, 30, 0.65);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    user-select: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.settings-nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.settings-nav-item:hover {
+    background: rgba(0, 122, 255, 0.06);
+    color: var(--text-primary);
+}
+
+.settings-nav-item:hover i { opacity: 1; }
+
+.settings-nav-item.active {
+    background: var(--apple-blue);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(0, 122, 255, 0.3);
+}
+
+.settings-nav-item.active i { opacity: 1; color: #fff; }
+
+.settings-nav-item.nav-danger { color: var(--apple-red); }
+.settings-nav-item.nav-danger i { color: var(--apple-red); opacity: 0.8; }
+.settings-nav-item.nav-danger:hover { background: rgba(255, 59, 48, 0.08); }
+.settings-nav-item.nav-danger.active { background: var(--apple-red); color: #fff; box-shadow: 0 2px 12px rgba(255, 59, 48, 0.3); }
+.settings-nav-item.nav-danger.active i { color: #fff; }
+
+.settings-nav-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0.35rem 0.75rem;
+}
+
+[data-theme="dark"] .settings-nav-divider {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Content Area ─── */
+.settings-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ─── Panel ─── */
+.settings-panel {
+    display: none;
+    animation: settingsPanelIn 0.35s ease;
+}
+
+.settings-panel.active { display: block; }
+
+@keyframes settingsPanelIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Section Header ─── */
+.settings-section-header { margin-bottom: 1.5rem; }
+
+.settings-section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.settings-section-header p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* ─── Glass Card ─── */
+.settings-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(28px) saturate(1.6);
+    -webkit-backdrop-filter: blur(28px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-2xl);
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .settings-card {
+    background: rgba(28, 28, 30, 0.65);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Card Header Row (title + edit button) ─── */
+.settings-card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.settings-card-header-row .settings-card-title {
+    margin-bottom: 0;
+}
+
+.settings-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.settings-card-title i {
+    color: var(--apple-blue);
+    font-size: 1rem;
+    width: 22px;
+    text-align: center;
+}
+
+/* ─── Edit Icon Button ─── */
+.settings-edit-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-lg);
+    border: 1.5px solid rgba(0, 122, 255, 0.2);
+    background: rgba(0, 122, 255, 0.04);
+    color: var(--apple-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.settings-edit-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+    border-color: var(--apple-blue);
+    transform: scale(1.05);
+}
+
+[data-theme="dark"] .settings-edit-btn {
+    border-color: rgba(0, 122, 255, 0.3);
+    background: rgba(0, 122, 255, 0.08);
+}
+
+/* ─── Cooldown Badge ─── */
+.settings-cooldown-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-full);
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--apple-orange);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.settings-cooldown-badge i { font-size: 0.65rem; }
+
+/* ─── View / Edit Modes ─── */
+.settings-edit-mode {
+    display: none;
+}
+
+.settings-edit-mode[style*="display: block"],
+.settings-edit-mode[style*="display:block"] {
+    animation: settingsEditIn 0.3s ease;
+}
+
+.settings-view-mode {
+    transition: opacity 0.2s ease;
+}
+
+@keyframes settingsEditIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Display Value (view mode) ─── */
+.settings-display-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0.25rem 0;
+}
+
+.settings-display-muted {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    color: var(--text-tertiary);
+}
+
+.settings-last-changed {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+/* ─── Edit Actions Row ─── */
+.settings-edit-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    align-items: center;
+}
+
+/* ─── Info Row (read-only fields) ─── */
+.settings-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.settings-info-row:last-child { border-bottom: none; }
+
+[data-theme="dark"] .settings-info-row {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.settings-info-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.settings-info-value {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.settings-info-value .badge-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    background: rgba(52, 199, 89, 0.12);
+    color: var(--apple-green);
+    margin-left: 0.5rem;
+}
+
+.settings-info-value .badge-unverified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    background: rgba(255, 149, 0, 0.12);
+    color: var(--apple-orange);
+    margin-left: 0.5rem;
+}
+
+/* ─── Field Hint ─── */
+.settings-field-hint {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+/* ─── Username Availability Status ─── */
+.settings-username-status {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 0.35rem;
+    min-height: 1.1em;
+}
+
+.settings-username-status.status-available {
+    color: var(--apple-green);
+}
+
+.settings-username-status.status-taken {
+    color: var(--apple-red);
+}
+
+.settings-username-status.status-checking {
+    color: var(--text-tertiary);
+}
+
+/* ─── Username Confirm Status (delete) ─── */
+.settings-username-confirm-status {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 0.35rem;
+}
+
+.settings-username-confirm-status.status-match {
+    color: var(--apple-green);
+}
+
+.settings-username-confirm-status.status-nomatch {
+    color: var(--apple-red);
+}
+
+/* ─── Empty State ─── */
+.settings-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.settings-empty-state i {
+    font-size: 1.5rem;
+    opacity: 0.5;
+}
+
+.settings-empty-state p {
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* ─── Form Controls (cards + modal) ─── */
+.settings-card .form-control,
+.settings-modal-content .form-control {
+    height: 48px;
+    border-radius: var(--radius-lg);
+    padding: 0 1rem;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .settings-card .form-control,
+[data-theme="dark"] .settings-modal-content .form-control {
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+}
+
+.settings-card .form-control:focus,
+.settings-modal-content .form-control:focus {
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    outline: none;
+}
+
+[data-theme="dark"] .settings-card .form-control:focus,
+[data-theme="dark"] .settings-modal-content .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+
+.settings-card .form-control::placeholder,
+.settings-modal-content .form-control::placeholder {
+    color: var(--text-tertiary);
+}
+
+.settings-card select.form-control {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8.825a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 1 1 .708-.708L6 7.617l3.646-3.646a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 6 8.825z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+/* ─── Field Groups ─── */
+.settings-field-group {
+    margin-bottom: 1rem;
+}
+
+.settings-field-group:last-child { margin-bottom: 0; }
+
+.settings-field-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ─── Password field with eye toggle ─── */
+.settings-password-wrapper {
+    position: relative;
+}
+
+.settings-password-wrapper .form-control {
+    padding-right: 3rem;
+}
+
+.settings-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    font-size: 0.95rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.settings-password-toggle:hover {
+    color: var(--text-primary);
+}
+
+/* ─── Password Strength Meter ─── */
+.settings-strength-meter {
+    height: 4px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.settings-strength-meter.visible { opacity: 1; }
+
+.settings-strength-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background 0.3s ease;
+    width: 0;
+}
+
+.settings-strength-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    transition: color 0.3s;
+}
+
+.settings-password-match {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.settings-password-match.match-ok { color: var(--apple-green); }
+.settings-password-match.match-fail { color: var(--apple-red); }
+
+[data-theme="dark"] .settings-strength-meter {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Buttons ─── */
+.settings-btn {
+    height: 48px;
+    border-radius: var(--radius-lg);
+    padding: 0 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.settings-btn-sm {
+    height: 40px;
+    padding: 0 1.25rem;
+    font-size: 0.85rem;
+}
+
+.settings-btn-primary {
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-blue-dark));
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(0, 122, 255, 0.25);
+}
+
+.settings-btn-primary:hover {
+    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.35);
+    transform: translateY(-1px);
+}
+
+.settings-btn-primary:active { transform: translateY(0); }
+
+.settings-btn-danger {
+    background: linear-gradient(135deg, var(--apple-red), var(--apple-red-dark));
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(255, 59, 48, 0.25);
+}
+
+.settings-btn-danger:hover {
+    box-shadow: 0 4px 20px rgba(255, 59, 48, 0.35);
+    transform: translateY(-1px);
+}
+
+.settings-btn-danger:active { transform: translateY(0); }
+
+.settings-btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+}
+
+.settings-btn-ghost:hover {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .settings-btn-ghost {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .settings-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-btn-outline {
+    background: transparent;
+    color: var(--apple-blue);
+    border: 1.5px solid var(--apple-blue);
+}
+
+.settings-btn-outline:hover {
+    background: rgba(0, 122, 255, 0.06);
+}
+
+.settings-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ─── Security Question Blocks ─── */
+.settings-sq-block {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+[data-theme="dark"] .settings-sq-block {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.settings-sq-number {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--apple-blue);
+    margin-bottom: 0.5rem;
+}
+
+.settings-current-sq {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.settings-current-sq i {
+    color: var(--apple-green);
+    font-size: 0.85rem;
+}
+
+/* ─── Danger Zone ─── */
+.settings-card-danger {
+    border-color: rgba(255, 59, 48, 0.2);
+}
+
+.settings-card-danger .settings-card-title i {
+    color: var(--apple-red);
+}
+
+.settings-danger-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 59, 48, 0.05);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .settings-danger-warning {
+    background: rgba(255, 59, 48, 0.1);
+}
+
+.settings-danger-warning i {
+    color: var(--apple-red);
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.settings-danger-warning p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ─── Danger Row (button on right) ─── */
+.settings-danger-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.settings-danger-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.settings-danger-content .settings-card-title {
+    margin-bottom: 0.75rem;
+}
+
+.settings-btn-delete {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .settings-danger-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .settings-btn-delete {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ─── Plan Card (Subscription) ─── */
+.settings-plan-card {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.06), rgba(175, 82, 222, 0.04));
+    border: 1px solid rgba(0, 122, 255, 0.15);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .settings-plan-card {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(175, 82, 222, 0.06));
+    border-color: rgba(0, 122, 255, 0.2);
+}
+
+.settings-plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-full);
+    background: var(--apple-blue);
+    color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.settings-plan-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.settings-plan-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* ─── Limits Grid ─── */
+.settings-limits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.settings-limit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .settings-limit-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.settings-limit-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.settings-limit-icon.icon-elections { background: rgba(0, 122, 255, 0.1); color: var(--apple-blue); }
+.settings-limit-icon.icon-active { background: rgba(255, 204, 0, 0.12); color: var(--apple-yellow, #ffcc00); }
+.settings-limit-icon.icon-posts { background: rgba(175, 82, 222, 0.1); color: var(--apple-purple); }
+.settings-limit-icon.icon-candidates { background: rgba(255, 149, 0, 0.1); color: var(--apple-orange); }
+.settings-limit-icon.icon-voters { background: rgba(52, 199, 89, 0.1); color: var(--apple-green); }
+.settings-limit-icon.icon-import { background: rgba(90, 200, 250, 0.1); color: var(--apple-teal, #5ac8fa); }
+
+.settings-limit-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-limit-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.settings-limit-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ─── Usage Bar ─── */
+.settings-usage { margin-top: 1rem; }
+
+.settings-usage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.settings-usage-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.settings-usage-count {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.settings-usage-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .settings-usage-bar {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.settings-usage-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--apple-blue), var(--apple-purple));
+    transition: width 0.6s ease;
+}
+
+/* ─── Plan Badge Color Variants ─── */
+.settings-plan-badge.badge-apple-blue { background: var(--apple-blue); }
+.settings-plan-badge.badge-apple-green { background: var(--apple-green, #34c759); }
+.settings-plan-badge.badge-apple-purple { background: var(--apple-purple, #af52de); }
+.settings-plan-badge.badge-apple-orange { background: var(--apple-orange, #ff9500); }
+
+/* ─── Feature Flags Row ─── */
+.settings-features-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+[data-theme="dark"] .settings-features-row {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+.settings-feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+.settings-feature.feature-on {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--apple-green, #34c759);
+}
+.settings-feature.feature-off {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-tertiary, rgba(0,0,0,.35));
+}
+[data-theme="dark"] .settings-feature.feature-off {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Plan Expiry ─── */
+.settings-plan-expiry {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.settings-plan-expiry i {
+    font-size: 0.75rem;
+    color: var(--apple-blue);
+}
+
+/* ─── Upgrade Prompt ─── */
+.settings-upgrade-prompt {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, rgba(175, 82, 222, 0.06), rgba(0, 122, 255, 0.06));
+    border: 1px solid rgba(175, 82, 222, 0.12);
+    border-radius: var(--radius-md);
+}
+[data-theme="dark"] .settings-upgrade-prompt {
+    background: linear-gradient(135deg, rgba(175, 82, 222, 0.08), rgba(0, 122, 255, 0.08));
+    border-color: rgba(175, 82, 222, 0.15);
+}
+.settings-upgrade-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.settings-upgrade-text i {
+    color: var(--apple-purple, #af52de);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* ─── Field Errors ─── */
+.settings-field-error {
+    font-size: 0.78rem;
+    color: var(--apple-red);
+    margin-top: 0.3rem;
+    font-weight: 500;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .settings-layout { flex-direction: column; }
+    .settings-sidebar { width: 100%; position: static; }
+
+    .settings-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.25rem;
+        padding: 0.4rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .settings-nav::-webkit-scrollbar { display: none; }
+
+    .settings-nav-item {
+        flex-shrink: 0;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.8rem;
+    }
+
+    .settings-nav-item span { display: none; }
+    .settings-nav-item i { width: auto; font-size: 1rem; }
+
+    .settings-nav-divider {
+        width: 1px;
+        height: 24px;
+        margin: 0 0.25rem;
+    }
+
+    .settings-container { padding: 0 1rem; }
+    .settings-card { padding: 1.25rem; }
+
+    .settings-card-header-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .settings-edit-actions { flex-wrap: wrap; }
+    .settings-limits-grid { grid-template-columns: 1fr; }
+    .settings-features-row { gap: 0.35rem; }
+    .settings-feature { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
+}
+
+@media (max-width: 480px) {
+    .settings-page-header h1 { font-size: 1.5rem; }
+    .settings-card { padding: 1rem; }
+}
+
+/* ═══════════════════════════════════════════════════
+   Modal Overlay & Dialog
+   ═══════════════════════════════════════════════════ */
+.settings-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+}
+
+.settings-modal {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 22px;
+    padding: 2rem 2rem 1.75rem;
+    max-width: 440px;
+    width: 92%;
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: scale(0.88) translateY(24px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.settings-modal-overlay.active .settings-modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+[data-theme="dark"] .settings-modal {
+    background: rgba(28, 28, 30, 0.96);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.settings-modal-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.settings-modal-close:hover {
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+[data-theme="dark"] .settings-modal-close {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .settings-modal-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.settings-modal-content {
+    text-align: center;
+}
+
+.settings-modal-content form .settings-field-group {
+    text-align: left;
+}
+
+/* ─── Modal Icon ─── */
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1.1rem;
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.12), rgba(0, 122, 255, 0.06));
+    color: var(--apple-blue);
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.1);
+    animation: modalIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes modalIconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+.modal-icon-red {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.12), rgba(255, 59, 48, 0.06));
+    color: var(--apple-red);
+    box-shadow: 0 4px 16px rgba(255, 59, 48, 0.1);
+}
+
+.modal-icon-green {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.12), rgba(52, 199, 89, 0.06));
+    color: var(--apple-green);
+    box-shadow: 0 4px 16px rgba(52, 199, 89, 0.1);
+}
+
+/* ─── Modal Title & Subtitle ─── */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.015em;
+}
+
+.modal-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.55;
+}
+
+/* ─── Modal Actions ─── */
+.modal-actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
+/* ─── Modal Error ─── */
+.modal-error {
+    font-size: 0.78rem;
+    color: var(--apple-red);
+    font-weight: 500;
+    margin-top: 0.35rem;
+    min-height: 1em;
+    text-align: left;
+}
+
+/* ─── Modal Code Input ─── */
+.modal-code-input {
+    text-align: center !important;
+    font-size: 1.6rem !important;
+    letter-spacing: 0.5rem !important;
+    font-weight: 700 !important;
+    font-family: 'SF Mono', 'Fira Code', monospace !important;
+}
+
+/* ─── Modal Responsive ─── */
+@media (max-width: 480px) {
+    .settings-modal {
+        width: 95%;
+        padding: 1.5rem;
+        border-radius: 18px;
+    }
+
+    .modal-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.3rem;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* ── Email Verification Hint ── */
+.settings-verify-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: var(--apple-blue);
+    background: rgba(0, 122, 255, 0.08);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+}
+[data-theme="dark"] .settings-verify-hint {
+    background: rgba(0, 122, 255, 0.12);
+    border-color: rgba(0, 122, 255, 0.2);
+}
+/* ═══════════════════════════════════════════════════
+   Dark Mode — Comprehensive Overrides
+   ═══════════════════════════════════════════════════ */
+
+/* Modal password toggle visibility */
+[data-theme="dark"] .settings-password-toggle {
+    color: var(--text-tertiary);
+}
+[data-theme="dark"] .settings-password-toggle:hover {
+    color: var(--text-primary);
+}
+
+/* Modal field labels */
+[data-theme="dark"] .settings-modal-content .settings-field-label {
+    color: var(--text-secondary);
+}
+
+/* Modal code input */
+[data-theme="dark"] .modal-code-input {
+    color: var(--text-primary) !important;
+}
+
+/* SQ block dark selects */
+[data-theme="dark"] .settings-card select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2398989d' d='M6 8.825a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 1 1 .708-.708L6 7.617l3.646-3.646a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 6 8.825z'/%3E%3C/svg%3E");
+}
+
+/* Danger card dark border */
+[data-theme="dark"] .settings-card-danger {
+    border-color: rgba(255, 59, 48, 0.3);
+}
+
+/* Plan card dark mode enhance */
+[data-theme="dark"] .settings-plan-badge {
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+/* Delete username confirm input dark mode */
+[data-theme="dark"] .settings-modal-content input[type="text"],
+[data-theme="dark"] .settings-modal-content input[type="password"] {
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .settings-modal-content input:focus {
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+
+/* Ghost buttons dark mode */
+[data-theme="dark"] .modal-actions .settings-btn-ghost {
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .modal-actions .settings-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+
+/* Disabled option styling in selects */
+[data-theme="dark"] select option:disabled {
+    color: var(--text-quaternary);
+}
+
+[data-theme="dark"] select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
