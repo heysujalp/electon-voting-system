@@ -12,7 +12,7 @@ A full-stack decentralized voting platform that brings trustworthy elections to 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Live Demo](#) · [Demo Video](#) · [Solana Explorer](https://explorer.solana.com/address/HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w?cluster=devnet)
+[Live Demo](https://youtu.be/FyVZHB8KP8A?si=mfzll7D3c5vFUdgU) · [Demo Video](https://youtu.be/FyVZHB8KP8A?si=mfzll7D3c5vFUdgU) · [Solana Explorer](https://explorer.solana.com/address/HLB1EmZyXZ4vqjkh7qPafjWDxQkMfaLiFExQkE2e5G7w?cluster=devnet)
 
 
 
